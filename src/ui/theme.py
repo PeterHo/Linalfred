@@ -21,8 +21,8 @@ class Theme(object):
         self.shadowOffset = 0.0
 
         if themeName == "Classic":
-            self.globalBeginHeight = 125
-            self.globalListWidgetY = 91
+            self.beginHeight = 125
+            self.listWidgetY = 91
             self.dimensions = QSize(550, 75)
             self.groupBoxStylesheet = "QGroupBox{background:white;border-radius: 9px;}"
             self.plainTextEditStylesheet = "QPlainTextEdit{border: 1px solid white}"
@@ -32,8 +32,8 @@ class Theme(object):
             self.shadowColor = QColor(0, 0, 0, 160)
             self.shadowOffset = 3.0
         elif themeName == "Dark":
-            self.globalBeginHeight = 94
-            self.globalListWidgetY = 65
+            self.beginHeight = 94
+            self.listWidgetY = 65
             self.dimensions = QSize(550, 50)
             self.groupBoxStylesheet = "QGroupBox{background:#444444;border-radius: 9px; padding: -3px -3px -3px -3px;}"
             self.plainTextEditStylesheet = "QPlainTextEdit{background:#3a3a3a; border: 1px solid #3a3a3a; color: #AAAAAA}"

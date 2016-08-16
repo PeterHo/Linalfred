@@ -9,4 +9,6 @@ class Cfg:
     iconSize = 42
 
     maxPrintSize = 9
+    maxListSize = 9
 
+    defaultIcon = 'icons/application-x-executable.png'

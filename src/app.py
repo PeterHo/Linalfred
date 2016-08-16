@@ -34,4 +34,5 @@ def getAllApps():
         appInfo.iconName = iconName
         apps.append(appInfo)
 
+    apps.sort(key=lambda x: x.name.lower())
     return apps

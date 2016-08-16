@@ -16,7 +16,11 @@ class WidgetThread(QThread):
         self.widget = parent
 
     def run(self):
-        text = self.widget.plainTextEdit.toPlainText()
+        cmd = self.widget.plainTextEdit.toPlainText()
         search = Search()
-        ret = search.searchApps(text, self.widget.apps)
-        self.finishSignal.emit(ret)
+        ret = search.searchApps(cmd, self.widget.apps)
+        self.widget.mutexThread.lock()
+        if cmd == self.widget.plainTextEdit.toPlainText():
+            self.finishSignal.emit(ret)
+        self.widget.mutexThread.unlock()
+
