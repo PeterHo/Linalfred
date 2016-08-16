@@ -1,9 +1,16 @@
+#!/usr/bin/python3
 # coding=utf-8
-import tkinter
+import sys
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+from ui.mainui import MainUI
 
 __author__ = 'peter'
 
-root = tkinter.Tk()
-edit = tkinter.Listbox(root)
-edit.pack()
-root.mainloop()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    wnd = MainUI()
+    sys.exit(app.exec_())
