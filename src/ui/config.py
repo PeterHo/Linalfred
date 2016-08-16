@@ -4,8 +4,9 @@ __author__ = 'peter'
 
 
 class Cfg:
-    rowsize = 51
-    beginheight = 125
-    iconsize = 42
+    rowSize = 51
+    beginHeight = 125
+    iconSize = 42
 
-    maxprintsize = 9
+    maxPrintSize = 9
+

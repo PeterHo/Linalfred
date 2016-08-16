@@ -3,6 +3,8 @@ import time
 from PyQt5.QtCore import QThread
 from PyQt5.QtCore import pyqtSignal
 
+from search import Search
+
 __author__ = 'peter'
 
 
@@ -14,7 +16,7 @@ class WidgetThread(QThread):
         self.widget = parent
 
     def run(self):
-        cmd = self.widget.plainTextEdit.toPlainText()
-        print(cmd)
-        time.sleep(2)
-        self.finishSignal.emit(['hello,', 'world', '!'])
+        text = self.widget.plainTextEdit.toPlainText()
+        search = Search()
+        ret = search.searchApps(text, self.widget.apps)
+        self.finishSignal.emit(ret)
