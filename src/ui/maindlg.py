@@ -1,11 +1,12 @@
 # coding=utf-8
+from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from app import getAllApps
-from ui.config import Cfg
-from ui.designer.widget import Ui_Widget
+from cmd import CmdType
+from config import Cfg
 from ui.maineditbox import MainEditBox
 from ui.mainlistbox import MainListBox
 from ui.theme import Theme
@@ -17,9 +18,7 @@ __author__ = 'peter'
 class MainDlg(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        self.ui = Ui_Widget()
-        self.ui.setupUi(self)
+        self.ui = uic.loadUi('ui/designer/widget.ui', self)
 
         self.mutexPaint = QMutex()
         self.mutexThread = QMutex()
@@ -58,17 +57,24 @@ class MainDlg(QWidget):
 
         self.editBox.setFocus()
 
+        self.center()
+
+    def show(self):
+        super().show()
+        print("get all apps")
         self.apps = getAllApps()
 
-        self.center()
-        self.show()
+    def closeDlg(self):
+        # # self.close()
+        # QCoreApplication.instance().quit()
+        self.hide()
 
     def keyPressEvent(self, e):
+        print(e.key())
         if e.key() == Qt.Key_Return:
             print("return")
         elif e.key() == Qt.Key_Escape:
-            # self.close()
-            QCoreApplication.instance().quit()
+            self.closeDlg()
 
     def onCmd(self):
         cmd = self.editBox.toPlainText()
@@ -84,20 +90,28 @@ class MainDlg(QWidget):
             self.listBox.setCurrentRow(0)
 
     def onEnterCurItem(self):
-        pass
+        row = self.listBox.currentRow()
+        if row >= self.listBox.count() or row < 0:
+            return
+        listWidgetItem = self.listBox.item(row)
+        item = self.listBox.itemWidget(listWidgetItem)
+        if item.cmd.type == CmdType.app:
+            print(item.cmd.executable)
+            QProcess.startDetached(item.cmd.executable)
+        self.closeDlg()
 
-    def showList(self, ls):
+    def showList(self, cmds):
         self.listBox.clear()
-        if not ls:
+        if not cmds:
             self.clearList()
             return
-        rowCnt = min(len(ls), Cfg.maxListSize)
+        rowCnt = min(len(cmds), Cfg.maxListSize)
         listBoxHeight = self.theme.rowSize * rowCnt
         dlgHeight = listBoxHeight + self.theme.dlgHeight
         self.listBox.show()
 
         for i in range(rowCnt):
-            self.listBox.addAppItem(ls[i].iconName, ls[i].name, "Alt+" + str(i + 1))
+            self.listBox.addCmdItem(cmds[i], "Alt+" + str(i + 1))
         self.listBox.setCurrentRow(0)
         self.listBox.setMaximumHeight(listBoxHeight)
         self.listBox.setGeometry(self.listBox.x(), self.theme.listY,

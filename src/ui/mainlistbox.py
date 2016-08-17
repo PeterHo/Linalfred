@@ -1,29 +1,26 @@
 # coding=utf-8
+from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
-from ui.designer.listitem import Ui_ListItem
 
 __author__ = 'peter'
 
 
 class ListItem(QWidget):
-    def __init__(self, parent, icon, text, cmd):
+    def __init__(self, parent, cmd, shortcut):
         super().__init__(parent)
-        self.ui = Ui_ListItem()
-        self.ui.setupUi(self)
-
+        self.ui = uic.loadUi('ui/designer/listitem.ui', self)
         self.dlg = parent
+        self.cmd = cmd
 
-        self.ui.cmd.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
+        self.ui.shortcut.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
         fm = QFontMetrics(self.ui.text.font())
-        self.ui.text.setText(fm.elidedText(text, Qt.ElideRight, self.ui.text.width()))
-        self.ui.cmd.setText(cmd)
-        if icon:
-            qIcon = QIcon(icon)
-        else:
-            qIcon = QIcon(self.dlg.theme.defaultIcon)
+        self.ui.text.setText(fm.elidedText(self.cmd.name, Qt.ElideRight, self.ui.text.width()))
+        self.ui.shortcut.setText(shortcut)
+        if not self.cmd.iconName:
+            self.cmd.iconName = self.dlg.theme.defaultIcon
+        qIcon = QIcon(self.cmd.iconName)
         p = qIcon.pixmap(QSize(self.dlg.theme.iconSize, self.dlg.theme.iconSize))
         self.ui.icon.setPixmap(p)
 
@@ -53,8 +50,8 @@ class MainListBox(QListWidget):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-    def addAppItem(self, iconName, name, cmd):
-        listItem = ListItem(self.dlg, iconName, name, cmd)
+    def addCmdItem(self, cmd, shortcut):
+        listItem = ListItem(self.dlg, cmd, shortcut)
         listWidgetItem = QListWidgetItem(self)
         listWidgetItem.setSizeHint(QSize(listItem.width(), listItem.height()))
         self.addItem(listWidgetItem)

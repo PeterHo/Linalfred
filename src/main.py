@@ -2,15 +2,17 @@
 # coding=utf-8
 import sys
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
+from singleton import SingletonApp
 from ui.maindlg import MainDlg
 
 __author__ = 'peter'
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    dlg = MainDlg()
-    sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = SingletonApp(sys.argv)
+    if app.is_running:
+        app.send_message(sys.argv)
+    else:
+        dlg = MainDlg()
+        dlg.show()
+        app.setDlg(dlg)
+        sys.exit(app.exec_())

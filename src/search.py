@@ -1,8 +1,6 @@
 # coding=utf-8
 import gi
 
-from app import App
-
 __author__ = 'peter'
 
 

@@ -1,4 +1,6 @@
 # coding=utf-8
+from cmd import Cmd, CmdType
+
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -7,19 +9,12 @@ from gi.repository import Gio, Gtk
 __author__ = 'peter'
 
 
-class App:
-    def __init__(self):
-        self.name = None
-        self.executable = None
-        self.iconName = None
-
-
 def getAllApps():
     iconTheme = Gtk.IconTheme.get_default()
     apps = []
     appList = Gio.AppInfo.get_all()
     for app in appList:
-        appInfo = App()
+        appInfo = Cmd(CmdType.app)
         name = Gio.AppInfo.get_display_name(app)
         executable = Gio.AppInfo.get_executable(app)
         iconName = None

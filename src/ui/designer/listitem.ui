@@ -44,7 +44,7 @@
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="cmd">
+  <widget class="QLabel" name="shortcut">
    <property name="geometry">
     <rect>
      <x>607</x>
