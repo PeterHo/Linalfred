@@ -51,7 +51,7 @@ class MainDlg(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
 
-        self.editBox.textChanged.connect(self.onCmd)
+        self.editBox.textChanged.connect(self.onCmdChanged)
         self.listBox.currentRowChanged.connect(self.onSetOne)
         self.listBox.itemPressed.connect(self.onEnterCurItem)
 
@@ -60,13 +60,15 @@ class MainDlg(QWidget):
         self.center()
 
     def show(self):
-        super().show()
         print("get all apps")
         self.apps = getAllApps()
+        self.clearList()
+        self.clearEditBox()
+        super().show()
 
     def closeDlg(self):
-        # # self.close()
-        # QCoreApplication.instance().quit()
+        self.clearList()
+        self.clearEditBox()
         self.hide()
 
     def keyPressEvent(self, e):
@@ -76,7 +78,7 @@ class MainDlg(QWidget):
         elif e.key() == Qt.Key_Escape:
             self.closeDlg()
 
-    def onCmd(self):
+    def onCmdChanged(self):
         cmd = self.editBox.toPlainText()
         if cmd:
             t = DlgThread(self)
@@ -119,6 +121,9 @@ class MainDlg(QWidget):
         self.setMaximumHeight(dlgHeight)
         self.setMinimumHeight(dlgHeight)
         self.setGeometry(self.x(), self.y(), dlgHeight, self.width())
+
+    def clearEditBox(self):
+        self.editBox.clear()
 
     def clearList(self):
         self.listBox.clear()
