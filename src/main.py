@@ -6,11 +6,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ui.mainui import MainUI
+from ui.maindlg import MainDlg
 
 __author__ = 'peter'
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    wnd = MainUI()
+    dlg = MainDlg()
     sys.exit(app.exec_())

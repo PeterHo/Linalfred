@@ -8,19 +8,19 @@ from search import Search
 __author__ = 'peter'
 
 
-class WidgetThread(QThread):
+class DlgThread(QThread):
     finishSignal = pyqtSignal(list)
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.widget = parent
+        self.dlg = parent
 
     def run(self):
-        cmd = self.widget.plainTextEdit.toPlainText()
+        cmd = self.dlg.editBox.toPlainText()
         search = Search()
-        ret = search.searchApps(cmd, self.widget.apps)
-        self.widget.mutexThread.lock()
-        if cmd == self.widget.plainTextEdit.toPlainText():
+        ret = search.searchApps(cmd, self.dlg.apps)
+        self.dlg.mutexThread.lock()
+        if cmd == self.dlg.editBox.toPlainText():
             self.finishSignal.emit(ret)
-        self.widget.mutexThread.unlock()
+        self.dlg.mutexThread.unlock()
 
