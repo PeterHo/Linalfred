@@ -18,3 +18,6 @@ class Cmd:
         # shortcut
         self.modifier = None
         self.shortcutKey = None
+
+    def __eq__(self, other):
+        return self.type == other.type and self.name == other.name and self.executable == self.executable

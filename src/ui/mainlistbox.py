@@ -27,6 +27,26 @@ class ListItem(QWidget):
         self.ui.icon.setPixmap(p)
 
 
+class DoubleListItem(QWidget):
+    def __init__(self, parent, cmd, shortcut):
+        super().__init__(parent)
+        self.ui = uic.loadUi('ui/designer/doublelistitem.ui', self)
+        self.dlg = parent
+        self.cmd = cmd
+
+        self.ui.subtext.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
+        self.ui.shortcut.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
+        fm = QFontMetrics(self.ui.text.font())
+        self.ui.text.setText(fm.elidedText(self.cmd.name, Qt.ElideRight, self.ui.text.width()))
+        self.ui.subtext.setText(fm.elidedText(self.cmd.executable, Qt.ElideRight, self.ui.text.width()))
+        self.ui.shortcut.setText(shortcut)
+        if not self.cmd.iconName:
+            self.cmd.iconName = self.dlg.theme.defaultIcon
+        qIcon = QIcon(self.cmd.iconName)
+        p = qIcon.pixmap(QSize(self.dlg.theme.iconSize, self.dlg.theme.iconSize))
+        self.ui.icon.setPixmap(p)
+
+
 class MainListBox(QListWidget):
     def __init__(self, parent, mainDlg):
         super().__init__(parent)
@@ -53,7 +73,7 @@ class MainListBox(QListWidget):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
     def addCmdItem(self, cmd, shortcut):
-        listItem = ListItem(self.dlg, cmd, shortcut)
+        listItem = DoubleListItem(self.dlg, cmd, shortcut)
         listWidgetItem = QListWidgetItem(self)
         listWidgetItem.setSizeHint(QSize(listItem.width(), listItem.height()))
         self.addItem(listWidgetItem)

@@ -1,4 +1,6 @@
 # coding=utf-8
+from functools import reduce
+
 from cmd import Cmd, CmdType
 
 import gi
@@ -29,5 +31,7 @@ def getAllApps():
         appInfo.iconName = iconName
         apps.append(appInfo)
 
+    # 去重
+    apps = reduce(lambda x, y: x if y in x else x + [y], [[], ] + apps)
     apps.sort(key=lambda x: x.name.lower())
     return apps
