@@ -30,3 +30,28 @@ class MainEditBox(QPlainTextEdit):
         self.setFocusPolicy(Qt.StrongFocus)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+    def keyPressEvent(self, event):
+        modifiers = event.modifiers()
+        key = event.key()
+        if modifiers & Qt.AltModifier:
+            pass
+        elif key == Qt.Key_Enter or key == Qt.Key_Return:
+            self.dlg.onEnterCurItem()
+            return
+        elif key == Qt.Key_Up:
+            if self.dlg.listBox.count() > 0:
+                self.dlg.listBox.selPreItem()
+                pass
+            else:
+                # TODO 显示切换历史命令
+                pass
+        elif key == Qt.Key_Down:
+            if self.dlg.listBox.count() > 0:
+                self.dlg.listBox.selNextItem()
+            else:
+                # TODO 显示切换历史命令
+                pass
+        else:
+            super().keyPressEvent(event)
+

@@ -77,6 +77,8 @@ class MainDlg(QWidget):
             print("return")
         elif e.key() == Qt.Key_Escape:
             self.closeDlg()
+        else:
+            super().keyPressEvent(e)
 
     def onCmdChanged(self):
         cmd = self.editBox.toPlainText()

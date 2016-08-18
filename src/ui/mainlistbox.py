@@ -56,3 +56,9 @@ class MainListBox(QListWidget):
         listWidgetItem.setSizeHint(QSize(listItem.width(), listItem.height()))
         self.addItem(listWidgetItem)
         self.setItemWidget(listWidgetItem, listItem)
+
+    def selPreItem(self):
+        self.setCurrentRow((self.currentRow() + self.count() - 1) % self.count())
+
+    def selNextItem(self):
+        self.setCurrentRow((self.currentRow() + 1) % self.count())
