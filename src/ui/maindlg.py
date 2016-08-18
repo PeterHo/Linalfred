@@ -64,16 +64,15 @@ class MainDlg(QWidget):
         print("get all apps")
         self.apps = getAllApps()
         self.clearList()
-        self.clearEditBox()
+        self.editBox.clearEditBox()
         super().show()
 
     def closeDlg(self):
         self.clearList()
-        self.clearEditBox()
+        self.editBox.clearEditBox()
         self.hide()
 
     def keyPressEvent(self, e):
-        print(e.key())
         if e.key() == Qt.Key_Return:
             print("return")
         elif e.key() == Qt.Key_Escape:
@@ -119,9 +118,6 @@ class MainDlg(QWidget):
         self.setMaximumHeight(dlgHeight)
         self.setMinimumHeight(dlgHeight)
         self.setGeometry(self.x(), self.y(), dlgHeight, self.width())
-
-    def clearEditBox(self):
-        self.editBox.clear()
 
     def clearList(self):
         self.listBox.clear()

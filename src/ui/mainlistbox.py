@@ -42,7 +42,11 @@ class DoubleListItem(QWidget):
         self.ui.shortcut.setText(shortcut)
         if not self.cmd.iconName:
             self.cmd.iconName = self.dlg.theme.defaultIcon
-        qIcon = QIcon(self.cmd.iconName)
+        if '/' not in self.cmd.iconName:
+            print("from theme")
+            qIcon = QIcon.fromTheme(self.cmd.iconName)
+        else:
+            qIcon = QIcon(self.cmd.iconName)
         p = qIcon.pixmap(QSize(self.dlg.theme.iconSize, self.dlg.theme.iconSize))
         self.ui.icon.setPixmap(p)
 

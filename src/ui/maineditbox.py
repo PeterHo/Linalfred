@@ -67,3 +67,6 @@ class MainEditBox(QPlainTextEdit):
                 pass
         else:
             super().keyPressEvent(event)
+
+    def clearEditBox(self):
+        self.clear()

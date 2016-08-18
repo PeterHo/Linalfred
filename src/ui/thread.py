@@ -18,7 +18,12 @@ class DlgThread(QThread):
     def run(self):
         cmd = self.dlg.editBox.toPlainText()
         search = Search()
-        ret = search.searchApps(cmd, self.dlg.apps)
+        if cmd[:1] == ' ':
+            # 文件查找
+            print("find files")
+            ret = []
+        else:
+            ret = search.searchApps(cmd, self.dlg.apps)
         self.dlg.mutexThread.lock()
         if cmd == self.dlg.editBox.toPlainText():
             self.finishSignal.emit(ret)
