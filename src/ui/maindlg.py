@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import *
 from app import getAllApps
 from cmd import CmdType
 from config import Cfg
+from shortcut import ListShortcut
 from ui.maineditbox import MainEditBox
 from ui.mainlistbox import MainListBox
 from ui.theme import Theme
@@ -94,14 +95,7 @@ class MainDlg(QWidget):
             self.listBox.setCurrentRow(0)
 
     def onEnterCurItem(self):
-        row = self.listBox.currentRow()
-        if row >= self.listBox.count() or row < 0:
-            return
-        listWidgetItem = self.listBox.item(row)
-        item = self.listBox.itemWidget(listWidgetItem)
-        if item.cmd.type == CmdType.app:
-            print(item.cmd.executable)
-            QProcess.startDetached(item.cmd.executable)
+        self.listBox.enterCurItem()
         self.closeDlg()
 
     def showList(self, cmds):
@@ -109,13 +103,15 @@ class MainDlg(QWidget):
         if not cmds:
             self.clearList()
             return
-        rowCnt = min(len(cmds), Cfg.maxListSize)
+        rowCnt = min(len(cmds), Cfg.UI.maxListSize)
         listBoxHeight = self.theme.rowSize * rowCnt
         dlgHeight = listBoxHeight + self.theme.dlgHeight
         self.listBox.show()
 
         for i in range(rowCnt):
-            self.listBox.addCmdItem(cmds[i], "Alt+" + str(i + 1))
+            cmds[i].shortcutKey = ListShortcut.getShortcutKey(i)
+            cmds[i].modifier = ListShortcut.getModifier(i)
+            self.listBox.addCmdItem(cmds[i], ListShortcut.getShortcutText(i))
         self.listBox.setCurrentRow(0)
         self.listBox.setMaximumHeight(listBoxHeight)
         self.listBox.setGeometry(self.listBox.x(), self.theme.listY,
@@ -145,5 +141,5 @@ class MainDlg(QWidget):
         deskX = deskRect.width()
         deskY = deskRect.height()
         x = deskX / 2 - self.width() / 2 + deskRect.left()
-        y = (deskY - self.theme.dlgHeight - self.theme.rowSize * (Cfg.maxListSize - 1)) * 0.4
+        y = (deskY - self.theme.dlgHeight - self.theme.rowSize * (Cfg.UI.maxListSize - 1)) * 0.4
         self.move(x, y)

@@ -34,19 +34,32 @@ class MainEditBox(QPlainTextEdit):
     def keyPressEvent(self, event):
         modifiers = event.modifiers()
         key = event.key()
+        alt, ctrl, win = False, False, False
         if modifiers & Qt.AltModifier:
-            pass
-        elif key == Qt.Key_Enter or key == Qt.Key_Return:
+            alt = True
+        if modifiers & Qt.ControlModifier:
+            ctrl = True
+        if modifiers & Qt.MetaModifier:
+            win = True
+
+        if alt or ctrl or win:
+            index = self.dlg.listBox.getItemIndexByShortcut(modifiers, key)
+            if index != -1:
+                self.dlg.listBox.enterItem(index)
+                self.dlg.closeDlg()
+                return
+
+        if key == Qt.Key_Enter or key == Qt.Key_Return:
             self.dlg.onEnterCurItem()
             return
-        elif key == Qt.Key_Up:
+        elif key == Qt.Key_Up or (ctrl and key == Qt.Key_K):
             if self.dlg.listBox.count() > 0:
                 self.dlg.listBox.selPreItem()
                 pass
             else:
                 # TODO 显示切换历史命令
                 pass
-        elif key == Qt.Key_Down:
+        elif key == Qt.Key_Down or (ctrl and key == Qt.Key_J):
             if self.dlg.listBox.count() > 0:
                 self.dlg.listBox.selNextItem()
             else:
@@ -54,4 +67,3 @@ class MainEditBox(QPlainTextEdit):
                 pass
         else:
             super().keyPressEvent(event)
-

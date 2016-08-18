@@ -4,6 +4,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from cmd import CmdType
+
 __author__ = 'peter'
 
 
@@ -62,3 +64,26 @@ class MainListBox(QListWidget):
 
     def selNextItem(self):
         self.setCurrentRow((self.currentRow() + 1) % self.count())
+
+    def getItem(self, index):
+        listWidgetItem = self.item(index)
+        return self.itemWidget(listWidgetItem)
+
+    def enterItem(self, index):
+        if index >= self.count() or index < 0:
+            return
+        item = self.getItem(index)
+        if item.cmd.type == CmdType.app:
+            print(item.cmd.executable)
+            QProcess.startDetached(item.cmd.executable)
+
+    def enterCurItem(self):
+        self.enterItem(self.currentRow())
+
+    def getItemIndexByShortcut(self, modifiers, key):
+        for i in range(self.count()):
+            item = self.getItem(i)
+            if item.cmd.modifier & modifiers and item.cmd.shortcutKey == key:
+                return i
+
+        return -1

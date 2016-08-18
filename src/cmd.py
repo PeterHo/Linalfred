@@ -15,3 +15,6 @@ class Cmd:
         self.name = None
         self.executable = None
         self.iconName = None
+        # shortcut
+        self.modifier = None
+        self.shortcutKey = None
