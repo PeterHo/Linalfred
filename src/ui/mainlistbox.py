@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from cmd import CmdType
+from config import Cfg
 
 __author__ = 'peter'
 
@@ -28,14 +29,17 @@ class ListItem(QWidget):
 
 
 class DoubleListItem(QWidget):
-    def __init__(self, parent, cmd, shortcut):
+    def __init__(self, parent, dlg):
         super().__init__(parent)
         self.ui = uic.loadUi('ui/designer/doublelistitem.ui', self)
-        self.dlg = parent
-        self.cmd = cmd
+        self.dlg = dlg
+        self.cmd = None
 
         self.ui.subtext.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
         self.ui.shortcut.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
+
+    def setInfo(self, cmd, shortcut):
+        self.cmd = cmd
         fm = QFontMetrics(self.ui.text.font())
         self.ui.text.setText(fm.elidedText(self.cmd.name, Qt.ElideRight, self.ui.text.width()))
         self.ui.subtext.setText(fm.elidedText(self.cmd.getDesc(), Qt.ElideRight, self.ui.text.width()))
@@ -56,9 +60,26 @@ class MainListBox(QListWidget):
         super().__init__(parent)
         self.dlg = mainDlg
         self.setMouseTracking(True)
+        self.itemList = []
+        self.curCount = Cfg.getInt('ui', 'maxListSize')
+        for i in range(self.curCount):
+            item = DoubleListItem(self, self.dlg)
+            self.itemList.append(item)
+            listWidgetItem = QListWidgetItem(self)
+            listWidgetItem.setSizeHint(QSize(item.width(), item.height()))
+            self.addItem(listWidgetItem)
+            self.setItemWidget(listWidgetItem, item)
+
+    def setCurCount(self, count):
+        self.curCount = count
+
+    def getCurCount(self):
+        return self.curCount
 
     def mouseMoveEvent(self, event):
         row = self.indexAt(event.pos()).row()
+        if row >= self.curCount:
+            row = self.curCount - 1
         self.setCurrentRow(row)
 
     def setSize(self):
@@ -76,19 +97,14 @@ class MainListBox(QListWidget):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-    def addCmdItem(self, cmd, shortcut):
-        listItem = DoubleListItem(self.dlg, cmd, shortcut)
-        # listItem = ListItem(self.dlg, cmd, shortcut)
-        listWidgetItem = QListWidgetItem(self)
-        listWidgetItem.setSizeHint(QSize(listItem.width(), listItem.height()))
-        self.addItem(listWidgetItem)
-        self.setItemWidget(listWidgetItem, listItem)
+    def setCmdItem(self, index, cmd, shortcut):
+        self.itemList[index].setInfo(cmd, shortcut)
 
     def selPreItem(self):
-        self.setCurrentRow((self.currentRow() + self.count() - 1) % self.count())
+        self.setCurrentRow((self.currentRow() + self.curCount - 1) % self.curCount)
 
     def selNextItem(self):
-        self.setCurrentRow((self.currentRow() + 1) % self.count())
+        self.setCurrentRow((self.currentRow() + 1) % self.curCount)
 
     def getItem(self, index):
         listWidgetItem = self.item(index)
@@ -98,8 +114,14 @@ class MainListBox(QListWidget):
         listWidgetItem = self.item(index)
         return listWidgetItem.text
 
+    def showItem(self, index):
+        self.itemList[index].show()
+
+    def hideItem(self, index):
+        self.itemList[index].hide()
+
     def enterItem(self, index):
-        if index >= self.count() or index < 0:
+        if index >= self.curCount or index < 0:
             return False
         item = self.getItem(index)
         # 如果命令没打完整,就补全
@@ -113,7 +135,7 @@ class MainListBox(QListWidget):
         return self.enterItem(self.currentRow())
 
     def getItemIndexByShortcut(self, modifiers, key):
-        for i in range(self.count()):
+        for i in range(self.curCount):
             item = self.getItem(i)
             if item.cmd.modifier & modifiers and item.cmd.shortcutKey == key:
                 return i

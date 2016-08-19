@@ -100,7 +100,6 @@ class MainDlg(QWidget):
             self.closeDlg()
 
     def showList(self, cmds):
-        self.listBox.clear()
         if not cmds:
             self.clearList()
             return
@@ -116,17 +115,22 @@ class MainDlg(QWidget):
         self.setMinimumHeight(dlgHeight)
         self.setGeometry(self.x(), self.y(), self.width(), dlgHeight)
 
+        self.listBox.setCurCount(rowCnt)
         for i in range(rowCnt):
             cmds[i].shortcutKey = ListShortcut.getShortcutKey(i)
             cmds[i].modifier = ListShortcut.getModifier(i)
-            self.listBox.addCmdItem(cmds[i], ListShortcut.getShortcutText(i))
+            self.listBox.showItem(i)
+            self.listBox.setCmdItem(i, cmds[i], ListShortcut.getShortcutText(i))
+        for i in range(rowCnt, Cfg.getInt('ui', 'maxListSize')):
+            self.listBox.hideItem(i)
+
         self.listBox.setCurrentRow(0)
 
         self.listBox.setGeometry(self.listBox.x(), self.theme.listY,
                                  self.listBox.width(), listBoxHeight)
 
     def clearList(self):
-        self.listBox.clear()
+        self.listBox.setCurCount(0)
         self.listBox.hide()
         self.setMaximumHeight(self.theme.dlgHeight)
         self.setMinimumHeight(self.theme.dlgHeight)
