@@ -41,7 +41,7 @@ class DoubleListItem(QWidget):
         self.ui.subtext.setText(fm.elidedText(self.cmd.executable, Qt.ElideRight, self.ui.text.width()))
         self.ui.shortcut.setText(shortcut)
         if not self.cmd.iconName:
-            self.cmd.iconName = self.dlg.theme.defaultIcon
+            self.cmd.iconName = self.dlg.theme.getDefaultIcon(self.cmd.type)
         if '/' not in self.cmd.iconName:
             print("from theme")
             qIcon = QIcon.fromTheme(self.cmd.iconName)
@@ -100,6 +100,8 @@ class MainListBox(QListWidget):
         if item.cmd.type == CmdType.app:
             print(item.cmd.executable)
             QProcess.startDetached(item.cmd.executable)
+        elif item.cmd.type == CmdType.file:
+            QProcess.startDetached('xdg-open', [item.cmd.executable])
 
     def enterCurItem(self):
         self.enterItem(self.currentRow())

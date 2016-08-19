@@ -48,3 +48,6 @@ class Theme(object):
                 QLabel {color: #AAAAAA;}
                 """
             self.groupBoxStylesheet = "QGroupBox{background:#444444;border-radius: 9px; padding: -3px -3px -3px -3px;}"
+
+    def getDefaultIcon(self, type):
+        return self.defaultIcon

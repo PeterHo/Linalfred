@@ -20,8 +20,7 @@ class DlgThread(QThread):
         search = Search()
         if cmd[:1] == ' ':
             # 文件查找
-            print("find files")
-            ret = []
+            ret = search.searchFiles(cmd[1:])
         else:
             ret = search.searchApps(cmd, self.dlg.apps)
         self.dlg.mutexThread.lock()

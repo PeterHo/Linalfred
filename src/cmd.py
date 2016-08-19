@@ -6,6 +6,7 @@ __author__ = 'peter'
 
 class CmdType(Enum):
     app = 0
+    file = 1
 
 
 class Cmd:
@@ -15,6 +16,7 @@ class Cmd:
         self.name = None
         self.executable = None
         self.iconName = None
+        self.qIcon = None
         # shortcut
         self.modifier = None
         self.shortcutKey = None
