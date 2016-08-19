@@ -15,16 +15,16 @@ class ListShortcut:
                   '4', '5', '6',
                   '7', '8', '9']
 
-    if Cfg.Shortcut.listModifier.lower() == 'alt':
+    if Cfg.get('shortcut', 'listModifier').lower() == 'alt':
         modifier = Qt.AltModifier
         modifierText = 'Alt'
     else:
         modifier = Qt.AltModifier
         modifierText = 'Alt'
 
-    if Cfg.Shortcut.listKeyType.lower() == 'char':
+    if Cfg.get('shortcut', 'listKeyType').lower() == 'char':
         keyList = charKeyList
-    elif Cfg.Shortcut.listKeyType.lower() == 'Num':
+    elif Cfg.get('shortcut', 'listKeyType').lower() == 'Num':
         keyList = numKeyList
     else:
         keyList = numKeyList

@@ -34,4 +34,6 @@ def getFileIconName(fileName):
     file_info = file.query_info('standard::icon', Gio.FileQueryInfoFlags.NONE, None)
     icon = Gio.FileInfo.get_icon(file_info)
     iconInfo = Gtk.IconTheme.lookup_by_gicon(iconTheme, icon, 256, Gtk.IconLookupFlags.USE_BUILTIN)
-    return iconInfo.get_filename()
+    if iconInfo:
+        return iconInfo.get_filename()
+    return None

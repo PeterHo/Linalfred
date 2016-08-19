@@ -1,6 +1,7 @@
 # coding=utf-8
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import *
 
 __author__ = 'peter'
@@ -31,6 +32,12 @@ class MainEditBox(QPlainTextEdit):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
+    def setText(self, text):
+        self.setPlainText(text)
+        c = QTextCursor(self.document())
+        c.setPosition(len(text))
+        self.setTextCursor(c)
+
     def keyPressEvent(self, event):
         modifiers = event.modifiers()
         key = event.key()
@@ -45,8 +52,8 @@ class MainEditBox(QPlainTextEdit):
         if alt or ctrl or win:
             index = self.dlg.listBox.getItemIndexByShortcut(modifiers, key)
             if index != -1:
-                self.dlg.listBox.enterItem(index)
-                self.dlg.closeDlg()
+                if self.dlg.listBox.enterItem(index):
+                    self.dlg.closeDlg()
                 return
 
         if key == Qt.Key_Enter or key == Qt.Key_Return:

@@ -1,12 +1,14 @@
 # coding=utf-8
+from PyQt5 import QtCore
+
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from app import getAllApps
-from cmd import CmdType
+from app import App
 from config import Cfg
+from plugin import Plugin
 from shortcut import ListShortcut
 from ui.maineditbox import MainEditBox
 from ui.mainlistbox import MainListBox
@@ -61,8 +63,8 @@ class MainDlg(QWidget):
         self.center()
 
     def show(self):
-        print("get all apps")
-        self.apps = getAllApps()
+        Plugin.getAllPlugins()
+        App.getAllApps()
         self.clearList()
         self.editBox.clearEditBox()
         super().show()
@@ -94,37 +96,41 @@ class MainDlg(QWidget):
             self.listBox.setCurrentRow(0)
 
     def onEnterCurItem(self):
-        self.listBox.enterCurItem()
-        self.closeDlg()
+        if self.listBox.enterCurItem():
+            self.closeDlg()
 
     def showList(self, cmds):
         self.listBox.clear()
         if not cmds:
             self.clearList()
             return
-        rowCnt = min(len(cmds), Cfg.UI.maxListSize)
+        rowCnt = min(len(cmds), Cfg.getInt('ui', 'maxListSize'))
         listBoxHeight = self.theme.rowSize * rowCnt
         dlgHeight = listBoxHeight + self.theme.dlgHeight
         self.listBox.show()
+
+        self.listBox.setMaximumHeight(listBoxHeight)
+        self.listBox.setGeometry(self.listBox.x(), self.theme.listY,
+                                 self.listBox.width(), listBoxHeight)
+        self.setMaximumHeight(dlgHeight)
+        self.setMinimumHeight(dlgHeight)
+        self.setGeometry(self.x(), self.y(), self.width(), dlgHeight)
 
         for i in range(rowCnt):
             cmds[i].shortcutKey = ListShortcut.getShortcutKey(i)
             cmds[i].modifier = ListShortcut.getModifier(i)
             self.listBox.addCmdItem(cmds[i], ListShortcut.getShortcutText(i))
         self.listBox.setCurrentRow(0)
-        self.listBox.setMaximumHeight(listBoxHeight)
+
         self.listBox.setGeometry(self.listBox.x(), self.theme.listY,
                                  self.listBox.width(), listBoxHeight)
-        self.setMaximumHeight(dlgHeight)
-        self.setMinimumHeight(dlgHeight)
-        self.setGeometry(self.x(), self.y(), dlgHeight, self.width())
 
     def clearList(self):
         self.listBox.clear()
         self.listBox.hide()
         self.setMaximumHeight(self.theme.dlgHeight)
         self.setMinimumHeight(self.theme.dlgHeight)
-        self.setGeometry(self.x(), self.y(), self.theme.dlgHeight, self.width())
+        self.setGeometry(self.x(), self.y(), self.width(), self.theme.dlgHeight)
 
     def mutexShowList(self, ls):
         self.mutexPaint.lock()
@@ -137,5 +143,5 @@ class MainDlg(QWidget):
         deskX = deskRect.width()
         deskY = deskRect.height()
         x = deskX / 2 - self.width() / 2 + deskRect.left()
-        y = (deskY - self.theme.dlgHeight - self.theme.rowSize * (Cfg.UI.maxListSize - 1)) * 0.4
+        y = (deskY - self.theme.dlgHeight - self.theme.rowSize * (Cfg.getInt('ui', 'maxListSize') - 1)) * 0.4
         self.move(x, y)

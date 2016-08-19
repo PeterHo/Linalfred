@@ -38,12 +38,12 @@ class DoubleListItem(QWidget):
         self.ui.shortcut.setStyleSheet("QLabel{color: rgb(100, 100, 100)}")
         fm = QFontMetrics(self.ui.text.font())
         self.ui.text.setText(fm.elidedText(self.cmd.name, Qt.ElideRight, self.ui.text.width()))
-        self.ui.subtext.setText(fm.elidedText(self.cmd.executable, Qt.ElideRight, self.ui.text.width()))
+        self.ui.subtext.setText(fm.elidedText(self.cmd.getDesc(), Qt.ElideRight, self.ui.text.width()))
         self.ui.shortcut.setText(shortcut)
+
         if not self.cmd.iconName:
             self.cmd.iconName = self.dlg.theme.getDefaultIcon(self.cmd.type)
         if '/' not in self.cmd.iconName:
-            print("from theme")
             qIcon = QIcon.fromTheme(self.cmd.iconName)
         else:
             qIcon = QIcon(self.cmd.iconName)
@@ -78,6 +78,7 @@ class MainListBox(QListWidget):
 
     def addCmdItem(self, cmd, shortcut):
         listItem = DoubleListItem(self.dlg, cmd, shortcut)
+        # listItem = ListItem(self.dlg, cmd, shortcut)
         listWidgetItem = QListWidgetItem(self)
         listWidgetItem.setSizeHint(QSize(listItem.width(), listItem.height()))
         self.addItem(listWidgetItem)
@@ -93,18 +94,23 @@ class MainListBox(QListWidget):
         listWidgetItem = self.item(index)
         return self.itemWidget(listWidgetItem)
 
+    def getItemText(self, index):
+        listWidgetItem = self.item(index)
+        return listWidgetItem.text
+
     def enterItem(self, index):
         if index >= self.count() or index < 0:
-            return
+            return False
         item = self.getItem(index)
-        if item.cmd.type == CmdType.app:
-            print(item.cmd.executable)
-            QProcess.startDetached(item.cmd.executable)
-        elif item.cmd.type == CmdType.file:
-            QProcess.startDetached('xdg-open', [item.cmd.executable])
+        # 如果命令没打完整,就补全
+        cmd = self.dlg.editBox.toPlainText()
+        if cmd.split()[0] != item.cmd.name:
+            cmd = item.cmd.name
+            self.dlg.editBox.setText(cmd + " ")
+        return item.cmd.exec(cmd)
 
     def enterCurItem(self):
-        self.enterItem(self.currentRow())
+        return self.enterItem(self.currentRow())
 
     def getItemIndexByShortcut(self, modifiers, key):
         for i in range(self.count()):
