@@ -135,6 +135,15 @@ class MainListBox(QListWidget):
     def enterCurItem(self):
         return self.enterItem(self.currentRow())
 
+    def getCurItem(self):
+        return self.getItem(self.currentRow())
+
+    def getCurItemCmd(self):
+        return self.getCurItem().cmd
+
+    def getCurItemKeyword(self):
+        return self.getCurItemCmd().keyword
+
     def getItemIndexByShortcut(self, modifiers, key):
         for i in range(self.curCount):
             item = self.getItem(i)

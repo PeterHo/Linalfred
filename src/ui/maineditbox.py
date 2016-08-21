@@ -60,18 +60,23 @@ class MainEditBox(QPlainTextEdit):
             self.dlg.onEnterCurItem()
             return
         elif key == Qt.Key_Up or (ctrl and key == Qt.Key_K):
-            if self.dlg.listBox.count() > 0:
+            if self.dlg.listBox.getCurCount() > 0:
                 self.dlg.listBox.selPreItem()
                 pass
             else:
                 # TODO 显示切换历史命令
                 pass
         elif key == Qt.Key_Down or (ctrl and key == Qt.Key_J):
-            if self.dlg.listBox.count() > 0:
+            if self.dlg.listBox.getCurCount() > 0:
                 self.dlg.listBox.selNextItem()
             else:
                 # TODO 显示切换历史命令
                 pass
+        elif key == Qt.Key_Tab:
+            # 如果有列表项并且命令中无空格,则补全
+            if self.dlg.listBox.getCurCount() > 0:
+                if ' ' not in self.toPlainText():
+                    self.setText(self.dlg.listBox.getCurItemKeyword() + " ")
         else:
             super().keyPressEvent(event)
 
