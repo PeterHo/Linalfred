@@ -45,7 +45,7 @@ class Cmd:
 
     def exec(self, cmd):
         if self.type == CmdType.app:
-            QProcess.startDetached(self.executable)
+            QProcess.startDetached(self.executable, cmd.split()[1:])
         elif self.type == CmdType.file:
             QProcess.startDetached('xdg-open', [self.path])
         elif self.type == CmdType.plugin:

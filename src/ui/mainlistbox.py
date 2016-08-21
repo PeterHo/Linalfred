@@ -125,7 +125,7 @@ class MainListBox(QListWidget):
             return False
         item = self.getItem(index)
         cmd = self.dlg.editBox.toPlainText()
-        if cmd.split()[0] != item.cmd.keyword:
+        if cmd.split()[0].lower() != item.cmd.keyword.lower():
             # 如果命令没打完整,就补全
             cmd = item.cmd.keyword
         # 在命令后添加空格
