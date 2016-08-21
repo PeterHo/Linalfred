@@ -27,6 +27,7 @@ class Plugin:
                     cmd.type = CmdType.plugin
                     cmd.name = module.Main.title
                     cmd.desc = module.Main.desc
+                    cmd.keyword = module.Main.keyword if hasattr(module.Main, 'keyword') else module.Main.title
                     cmd.plugin = module
                     if module.Main.iconName:
                         cmd.iconName = dirFullName + '/' + module.Main.iconName

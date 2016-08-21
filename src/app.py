@@ -33,6 +33,7 @@ class App:
                     iconName = iconInfo.get_filename()
 
             appInfo.name = name
+            appInfo.keyword = name
             appInfo.executable = executable
             appInfo.iconName = iconName
             App.apps.append(appInfo)

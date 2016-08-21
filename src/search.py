@@ -26,15 +26,23 @@ class Search:
         return needLower
 
     @staticmethod
-    def searchApps(keyword):
+    def searchApps(keyword, noRegex):
         apps = []
         needLower = Search.needLower(keyword)
+        if noRegex:
+            for app in App.getAppList():
+                if needLower and keyword == app.keyword.lower():
+                    apps.append(app)
+                elif not needLower and keyword == app.keyword:
+                    apps.append(app)
+            return apps
+
         regex = Search.getRegex(keyword)
         for app in App.getAppList():
-            match = regex.search(app.name.lower() if needLower else app.name)
+            match = regex.search(app.keyword.lower() if needLower else app.keyword)
             if match:
                 apps.append((len(match.group()), match.start(), app))
-        return [x for _, _, x in sorted(apps, key=lambda x: (x[0], x[1], x[2].name.lower()))]
+        return [x for _, _, x in sorted(apps, key=lambda x: (x[0], x[1], x[2].keyword.lower()))]
 
     @staticmethod
     def searchFiles(keyword):
@@ -52,6 +60,7 @@ class Search:
         for i in range(min(len(files), Cfg.getInt('ui', 'maxListSize'))):
             f = Cmd()
             f.name = basename(files[i])
+            f.keyword = f.name
             f.type = CmdType.file
             f.path = files[i]
             f.iconName = getFileIconName(files[i])
@@ -65,5 +74,5 @@ class Search:
             ret = Search.searchFiles(keyword[1:])
         else:
             # 查找App,插件,内置命令
-            ret = Search.searchApps(keyword.split()[0])
+            ret = Search.searchApps(keyword.split()[0], ' ' in keyword)
         return ret

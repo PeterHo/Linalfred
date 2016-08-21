@@ -18,6 +18,7 @@ class Cmd:
         self.type = type
         # commons
         self.name = None
+        self.keyword = None
         self.iconName = None
         # app
         self.executable = None

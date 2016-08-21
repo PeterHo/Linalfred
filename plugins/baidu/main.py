@@ -7,6 +7,7 @@ __author__ = 'peter'
 class Main:
     title = 'BaiDu'
     desc = '使用百度搜索'
+    keyword = 'b'
     iconName = 'baidu.png'
 
     @staticmethod

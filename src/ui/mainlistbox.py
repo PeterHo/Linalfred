@@ -124,11 +124,12 @@ class MainListBox(QListWidget):
         if index >= self.curCount or index < 0:
             return False
         item = self.getItem(index)
-        # 如果命令没打完整,就补全
         cmd = self.dlg.editBox.toPlainText()
-        if cmd.split()[0] != item.cmd.name:
-            cmd = item.cmd.name
-            self.dlg.editBox.setText(cmd + " ")
+        if cmd.split()[0] != item.cmd.keyword:
+            # 如果命令没打完整,就补全
+            cmd = item.cmd.keyword
+        # 在命令后添加空格
+        self.dlg.editBox.setText(cmd.strip() + " ")
         return item.cmd.exec(cmd)
 
     def enterCurItem(self):

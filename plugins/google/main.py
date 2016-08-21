@@ -7,6 +7,7 @@ __author__ = 'peter'
 class Main:
     title = 'Google'
     desc = '使用谷歌搜索'
+    keyword = 'g'
     iconName = 'google.png'
 
     @staticmethod
