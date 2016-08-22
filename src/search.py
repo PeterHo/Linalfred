@@ -3,8 +3,9 @@ import re
 
 from os.path import basename
 
-from app import App
-from cmd import Cmd, CmdType
+from app import AppList
+from cmd import FileCmd
+from common import isNeedLower
 from config import Cfg
 from file import getFileList, getFileIconName
 
@@ -18,19 +19,11 @@ class Search:
         return re.compile(pattern)
 
     @staticmethod
-    def needLower(keyword):
-        if keyword.islower():
-            needLower = True
-        else:
-            needLower = False
-        return needLower
-
-    @staticmethod
     def searchApps(keyword, noRegex):
         apps = []
-        needLower = Search.needLower(keyword)
+        needLower = isNeedLower(keyword)
         if noRegex:
-            for app in App.getAppList():
+            for app in AppList.getAppList():
                 if needLower and keyword == app.keyword.lower():
                     apps.append(app)
                 elif not needLower and keyword == app.keyword:
@@ -38,7 +31,7 @@ class Search:
             return apps
 
         regex = Search.getRegex(keyword)
-        for app in App.getAppList():
+        for app in AppList.getAppList():
             match = regex.search(app.keyword.lower() if needLower else app.keyword)
             if match:
                 apps.append((len(match.group()), match.start(), app))
@@ -47,7 +40,7 @@ class Search:
     @staticmethod
     def searchFiles(keyword):
         files = []
-        needLower = Search.needLower(keyword)
+        needLower = isNeedLower(keyword)
         regex = Search.getRegex(keyword)
         fileList = getFileList(keyword)
         for file in fileList:
@@ -58,13 +51,7 @@ class Search:
         files = [x for _, _, x in sorted(files)]
         ret = []
         for i in range(min(len(files), Cfg.getInt('ui', 'maxListSize'))):
-            f = Cmd()
-            f.name = basename(files[i])
-            f.keyword = f.name
-            f.type = CmdType.file
-            f.path = files[i]
-            f.iconName = getFileIconName(files[i])
-            ret.append(f)
+            ret.append(FileCmd().set(name=basename(files[i]), path=files[i], iconName=getFileIconName(files[i])))
         return ret
 
     @staticmethod

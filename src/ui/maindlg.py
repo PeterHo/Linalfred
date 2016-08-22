@@ -8,7 +8,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from app import App
+from app import AppList
 from config import Cfg
 from plugin import Plugin
 from shortcut import ListShortcut
@@ -65,8 +65,9 @@ class MainDlg(QWidget):
         self.center()
 
     def show(self):
+        # 刷新插件列表和应用列表
         Plugin.getAllPlugins()
-        App.getAllApps()
+        AppList.getAllApps()
         self.clearList()
         self.editBox.clearEditBox()
         super().show()

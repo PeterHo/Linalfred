@@ -1,6 +1,6 @@
 # coding=utf-8
 import os
-from cmd import Cmd, CmdType
+from cmd import PluginCmd
 from importlib import util
 
 from config import Cfg
@@ -23,15 +23,7 @@ class Plugin:
                     spec = util.spec_from_file_location('main', pluginFullName)
                     module = util.module_from_spec(spec)
                     spec.loader.exec_module(module)
-                    cmd = Cmd()
-                    cmd.type = CmdType.plugin
-                    cmd.name = module.Main.title
-                    cmd.desc = module.Main.desc
-                    cmd.keyword = module.Main.keyword if hasattr(module.Main, 'keyword') else module.Main.title
-                    cmd.plugin = module
-                    if module.Main.iconName:
-                        cmd.iconName = dirFullName + '/' + module.Main.iconName
-                    Plugin.pluginList.append(cmd)
+                    Plugin.pluginList.append(PluginCmd().set(module, dirFullName))
                 except:
                     pass
 

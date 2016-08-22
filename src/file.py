@@ -3,18 +3,12 @@ import os
 
 import gi
 
+from common import isNeedLower
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk
 
 __author__ = 'peter'
-
-
-def isNeedLower(keyword):
-    if keyword.islower():
-        needLower = True
-    else:
-        needLower = False
-    return needLower
 
 
 def getFileList(keyword):
