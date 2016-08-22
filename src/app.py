@@ -35,10 +35,6 @@ class AppList:
 
         # 去重
         AppList.apps = reduce(lambda x, y: x if y in x else x + [y], [[], ] + AppList.apps)
-        # 加入脚本命令
-        AppList.apps += Plugin.getPluginList()
-        # 加入内置命令
-        AppList.apps += BuildInCmdList.getList()
         AppList.apps.sort(key=lambda x: x.name.lower())
         return AppList.apps
 

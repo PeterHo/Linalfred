@@ -98,6 +98,16 @@ class PluginCmd(Cmd):
         self.desc = None
         self.plugin = None
 
+    def copy(self):
+        new = PluginCmd()
+        new.type = self.type
+        new.desc = self.desc
+        new.plugin = self.plugin
+        new.name = self.name
+        new.keyword = self.keyword
+        new.iconName = self.iconName
+        return new
+
     def getDesc(self):
         return self.desc
 
@@ -110,6 +120,23 @@ class PluginCmd(Cmd):
             self.iconName = path + '/' + module.Main.iconName
         return self
 
+    def list(self, cmd):
+        if hasattr(self.plugin.Main, 'list'):
+            showList = []
+            list_ = self.plugin.Main.list(cmd.split()[1:])
+            for l in list_:
+                new = self.copy()
+                if l[0]:
+                    new.name = l[0]
+                if l[1]:
+                    new.desc = l[1]
+                if l[2]:
+                    new.iconName = l[2]
+                showList.append(new)
+            return showList
+
+        return [self]
+
     def exec(self, cmd):
         return self.plugin.Main.run(cmd.split()[1:])
 
@@ -120,20 +147,27 @@ class BuildInCmd(Cmd):
         self.type = CmdType.buildIn
         self.desc = None
         self.handler = None
+        self.listFun = None
 
     def getDesc(self):
         return self.desc
 
+    def list(self, cmd):
+        if self.listFun:
+            return self.listFun(cmd.split()[1:])
+        return [self]
+
     def exec(self, cmd):
         return self.handler(cmd.split()[1:])
 
-    def set(self, name, handler, desc=None, icon=None):
+    def set(self, name, handler, desc=None, icon=None, listFun=None):
         self.name = name
         self.keyword = name
         self.desc = desc
         self.handler = handler
         if icon:
             self.iconName = Cfg.iconPath + icon
+        self.listFun = listFun
         return self
 
 
@@ -141,14 +175,15 @@ class BuildInCmdList:
     cmdList = []
 
     @staticmethod
-    def onQuit(params=None):
+    def onQuitExec(params=None):
         SingletonApp.instance.onExit(None, None)
         return True
 
     @staticmethod
     def init():
         BuildInCmdList.cmdList.clear()
-        BuildInCmdList.cmdList.append(BuildInCmd().set('Quit', BuildInCmdList.onQuit, '退出 Linalfred', 'quit.png'))
+        BuildInCmdList.cmdList.append(BuildInCmd().set('Quit', BuildInCmdList.onQuitExec, '退出 Linalfred', 'quit.png'))
+        BuildInCmdList.cmdList.sort(key=lambda x: x.name.lower())
 
     @staticmethod
     def getList():

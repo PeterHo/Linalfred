@@ -29,7 +29,7 @@ class Plugin:
 
     @staticmethod
     def getPluginList():
-        return Plugin.pluginList
+        return sorted(Plugin.pluginList, key=lambda x: x.name.lower())
 
 
 if __name__ == '__main__':

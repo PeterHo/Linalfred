@@ -16,3 +16,7 @@ class Main:
             return False
         QProcess.startDetached("xdg-open", ["https://www.google.com/search?q=" + "+".join(param)])
         return True
+
+    @staticmethod
+    def list(param):
+        return [(None, Main.desc + " " + " ".join(param), None)]
