@@ -97,6 +97,7 @@ class PluginCmd(Cmd):
         self.type = CmdType.plugin
         self.desc = None
         self.plugin = None
+        self.path = None
 
     def copy(self):
         new = PluginCmd()
@@ -106,18 +107,26 @@ class PluginCmd(Cmd):
         new.name = self.name
         new.keyword = self.keyword
         new.iconName = self.iconName
+        new.path = self.path
         return new
 
     def getDesc(self):
         return self.desc
+
+    def setIconName(self, iconName):
+        if iconName:
+            if '/' in iconName:
+                self.iconName = iconName
+            else:
+                self.iconName = self.path + '/' + iconName
 
     def set(self, module, path):
         self.name = module.Main.title
         self.desc = module.Main.desc
         self.keyword = module.Main.keyword if hasattr(module.Main, 'keyword') else module.Main.title
         self.plugin = module
-        if module.Main.iconName:
-            self.iconName = path + '/' + module.Main.iconName
+        self.path = path
+        self.setIconName(module.Main.iconName)
         return self
 
     def list(self, cmd):
@@ -131,7 +140,7 @@ class PluginCmd(Cmd):
                 if l[1]:
                     new.desc = l[1]
                 if l[2]:
-                    new.iconName = l[2]
+                    new.setIconName(l[2])
                 showList.append(new)
             return showList
 

@@ -1,11 +1,9 @@
 # coding=utf-8
 from functools import reduce
 
-from cmd import AppCmd, BuildInCmdList
+from cmd import AppCmd
 
 import gi
-
-from plugin import Plugin
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk
