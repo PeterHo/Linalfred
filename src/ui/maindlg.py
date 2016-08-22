@@ -1,4 +1,6 @@
 # coding=utf-8
+import os
+
 from PyQt5 import QtCore
 
 from PyQt5 import uic
@@ -21,7 +23,7 @@ __author__ = 'peter'
 class MainDlg(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.ui = uic.loadUi('ui/designer/widget.ui', self)
+        self.ui = uic.loadUi(Cfg.srcPath + 'ui/designer/widget.ui', self)
 
         self.mutexPaint = QMutex()
         self.mutexThread = QMutex()

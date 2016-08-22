@@ -3,6 +3,9 @@ from enum import Enum
 
 from PyQt5.QtCore import QProcess
 
+from config import Cfg
+from singleton import SingletonApp
+
 __author__ = 'peter'
 
 
@@ -28,7 +31,7 @@ class Cmd:
         self.desc = None
         self.plugin = None
         # build in cmd
-
+        self.handler = None
         # shortcut
         self.modifier = None
         self.shortcutKey = None
@@ -41,6 +44,8 @@ class Cmd:
             desc = self.path
         elif self.type == CmdType.plugin:
             desc = self.desc
+        elif self.type == CmdType.buildInCmd:
+            desc = self.desc
         return desc
 
     def exec(self, cmd):
@@ -50,11 +55,41 @@ class Cmd:
             QProcess.startDetached('xdg-open', [self.path])
         elif self.type == CmdType.plugin:
             return self.plugin.Main.run(cmd.split()[1:])
+        elif self.type == CmdType.buildInCmd:
+            return self.handler(cmd.split()[1:])
         return True
 
     def __eq__(self, other):
         return self.type == other.type and self.name == other.name and self.executable == self.executable
 
 
-def getBuildInCmdList():
-    return []
+class BuildInCmd:
+    cmdList = []
+
+    @staticmethod
+    def initOneCmd(name, handler, desc=None, icon=None):
+        cmd = Cmd()
+        cmd.name = name
+        cmd.keyword = name
+        cmd.type = CmdType.buildInCmd
+        cmd.desc = desc
+        cmd.handler = handler
+        if icon:
+            cmd.iconName = Cfg.iconPath + icon
+        return cmd
+
+    @staticmethod
+    def initBuildInCmdList():
+        BuildInCmd.cmdList.clear()
+        BuildInCmd.cmdList.append(BuildInCmd.initOneCmd('Quit', BuildInCmd.onQuit, '退出 Linalfred', 'quit.png'))
+
+    @staticmethod
+    def onQuit(params=None):
+        SingletonApp.instance.onExit(None, None)
+        return True
+
+    @staticmethod
+    def getBuildInCmdList():
+        if not BuildInCmd.cmdList:
+            BuildInCmd.initBuildInCmdList()
+        return BuildInCmd.cmdList

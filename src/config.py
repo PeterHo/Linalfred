@@ -6,8 +6,10 @@ __author__ = 'peter'
 
 class Cfg:
     basePath = "/home/peter/src/Linalfred/"
+    srcPath = basePath + "src/"
     cfgPath = basePath + "config/"
     pluginPath = basePath + "plugins/"
+    iconPath = basePath + "src/icons/"
 
     @staticmethod
     def get(sectionName, key):

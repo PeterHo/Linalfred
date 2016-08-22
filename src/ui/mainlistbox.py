@@ -1,4 +1,6 @@
 # coding=utf-8
+import os
+
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -13,7 +15,7 @@ __author__ = 'peter'
 class ListItem(QWidget):
     def __init__(self, parent, cmd, shortcut):
         super().__init__(parent)
-        self.ui = uic.loadUi('ui/designer/listitem.ui', self)
+        self.ui = uic.loadUi(Cfg.srcPath + 'ui/designer/listitem.ui', self)
         self.dlg = parent
         self.cmd = cmd
 
@@ -31,7 +33,7 @@ class ListItem(QWidget):
 class DoubleListItem(QWidget):
     def __init__(self, parent, dlg):
         super().__init__(parent)
-        self.ui = uic.loadUi('ui/designer/doublelistitem.ui', self)
+        self.ui = uic.loadUi(Cfg.srcPath + 'ui/designer/doublelistitem.ui', self)
         self.dlg = dlg
         self.cmd = None
 

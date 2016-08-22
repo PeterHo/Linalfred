@@ -4,6 +4,8 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
+from config import Cfg
+
 __author__ = 'peter'
 
 
@@ -23,7 +25,7 @@ class Theme(object):
         # 列表项
         self.rowSize = 51
         self.iconSize = 42
-        self.defaultIcon = 'icons/application-x-executable.png'
+        self.defaultIcon = 'application-x-executable.png'
 
         # 列表
         self.listY = 91
@@ -50,4 +52,4 @@ class Theme(object):
             self.groupBoxStylesheet = "QGroupBox{background:#444444;border-radius: 9px; padding: -3px -3px -3px -3px;}"
 
     def getDefaultIcon(self, type):
-        return self.defaultIcon
+        return Cfg.iconPath + self.defaultIcon

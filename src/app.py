@@ -1,7 +1,7 @@
 # coding=utf-8
 from functools import reduce
 
-from cmd import Cmd, CmdType, getBuildInCmdList
+from cmd import Cmd, CmdType, BuildInCmd
 
 import gi
 
@@ -33,7 +33,7 @@ class App:
                     iconName = iconInfo.get_filename()
 
             appInfo.name = name
-            appInfo.keyword = name
+            appInfo.keyword = name.replace(' ', '')
             appInfo.executable = executable
             appInfo.iconName = iconName
             App.apps.append(appInfo)
@@ -43,7 +43,7 @@ class App:
         # 加入脚本命令
         App.apps += Plugin.getPluginList()
         # 加入内置命令
-        App.apps += getBuildInCmdList()
+        App.apps += BuildInCmd.getBuildInCmdList()
         App.apps.sort(key=lambda x: x.name.lower())
         return App.apps
 
