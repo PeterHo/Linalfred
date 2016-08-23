@@ -1,12 +1,13 @@
 # coding=utf-8
-import threading
+from PyQt5.QtCore import QThread
+from PyQt5.QtCore import pyqtSignal
 from Xlib.display import Display
 from Xlib import X, error
 
 import gi
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GObject, GLib
+from gi.repository import Gtk, Gdk
 
 __author__ = 'peter'
 
@@ -28,16 +29,12 @@ class HotKey:
         return self
 
 
-class GlobalKeyBinding(GObject.GObject, threading.Thread):
-    __gsignals__ = {
-        'hotKeyPress': (GObject.SIGNAL_RUN_LAST, None, (object,)),
-    }
+class GlobalHotKeyBinding(QThread):
+    keyPressSignal = pyqtSignal(object)
 
-    def __init__(self):
-        GObject.GObject.__init__(self)
-        threading.Thread.__init__(self)
-        self.setDaemon(True)
-
+    def __init__(self, parent=None, callBack=None):
+        super().__init__(parent)
+        self.dlg = parent
         self.keymap = Gdk.Keymap.get_default()
         self.display = Display()
         self.screen = self.display.screen()
@@ -45,6 +42,7 @@ class GlobalKeyBinding(GObject.GObject, threading.Thread):
         self.map_modifiers()
         self.hotKeyList = []
         self.running = False
+        self.keyPressSignal.connect(callBack)
 
     def map_modifiers(self):
         gdk_modifiers = (Gdk.ModifierType.CONTROL_MASK, Gdk.ModifierType.SHIFT_MASK, Gdk.ModifierType.MOD1_MASK,
@@ -74,12 +72,6 @@ class GlobalKeyBinding(GObject.GObject, threading.Thread):
         for hotKey in self.hotKeyList:
             self.root.ungrab_key(hotKey.keyCode, X.AnyModifier, self.root)
 
-    def idle(self, keyCode):
-        Gdk.threads_enter()
-        self.emit("hotKeyPress", keyCode)
-        Gdk.threads_leave()
-        return False
-
     def run(self):
         self.running = True
         while self.running:
@@ -94,7 +86,9 @@ class GlobalKeyBinding(GObject.GObject, threading.Thread):
                 elif event.detail == hotKey.keyCode and hotKey.wait_for_release:
                     if event.type == X.KeyRelease:
                         hotKey.wait_for_release = False
-                        GLib.idle_add(self.idle, hotKey)
+                        self.dlg.mutexThread.lock()
+                        self.keyPressSignal.emit(hotKey)
+                        self.dlg.mutexThread.unlock()
                     self.display.allow_events(X.AsyncKeyboard, event.time)
                     break
             else:
@@ -104,23 +98,3 @@ class GlobalKeyBinding(GObject.GObject, threading.Thread):
         self.running = False
         self.ungrab_all()
         self.display.close()
-
-
-def callback(caller, hotkey):
-    print(str(hotkey.keyVal) + " pressed")
-
-
-if __name__ == '__main__':
-    Gdk.threads_init()
-    key = GlobalKeyBinding()
-    key.connect('hotKeyPress', callback)
-    key.grab('<Alt>A')
-    key.grab('<Alt>B')
-    key.grab('<Alt>C')
-    key.grab('<Alt>D')
-    key.grab('<Alt>E')
-    key.grab('<Alt>F')
-    key.grab('<Alt>G')
-    key.grab('<Alt>H')
-    key.start()
-    Gtk.main()

@@ -1,13 +1,11 @@
 # coding=utf-8
 import os
-from itertools import cycle
-from pprint import pprint
 import gi
 
-from globalhotkey import GlobalKeyBinding
+from globalhotkey import GlobalHotKeyBinding
 
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GObject, GLib
+from gi.repository import Gtk
 
 __author__ = 'peter'
 
@@ -69,7 +67,6 @@ lastWid = None
 
 def switchToNextWnd(wndList):
     global lastWid
-    print(wndList)
     if len(wndList) == 1 or lastWid is None or lastWid not in wndList:
         # 只有一个窗口,或上次记录不在列表中,或不存在上次记录,直接切换
         lastWid = wndList[0]
@@ -99,22 +96,15 @@ def switchToWnd(cmd):
         os.popen(cmd)
 
 
-def onGlobalHotKey(caller, hotkey):
+def onGlobalHotKey(hotkey):
     for key in hotKeys:
         keyVal, modifiers = Gtk.accelerator_parse(key[0])
         if keyVal == hotkey.keyVal:
             return switchToWnd(key[1])
 
 
-def initSwitchWnd():
-    Gdk.threads_init()
-    key = GlobalKeyBinding()
-    key.connect('hotKeyPress', onGlobalHotKey)
+def initSwitchWnd(dlg):
+    key = GlobalHotKeyBinding(dlg, onGlobalHotKey)
     for hotkey in hotKeys:
         key.grab(hotkey[0])
     key.start()
-    Gtk.main()
-
-
-if __name__ == '__main__':
-    initSwitchWnd()
