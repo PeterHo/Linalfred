@@ -8,10 +8,14 @@ from gi.repository import Gio, Gtk
 
 __author__ = 'peter'
 
+appList = []
+
 
 def getAppIcon(name):
+    global appList
     iconTheme = Gtk.IconTheme.get_default()
-    appList = Gio.AppInfo.get_all()
+    if not appList:
+        appList = Gio.AppInfo.get_all()
     for app in appList:
         if name == Gio.AppInfo.get_display_name(app) or \
                         name == Gio.AppInfo.get_executable(app) or \
