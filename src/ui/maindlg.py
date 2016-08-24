@@ -1,8 +1,4 @@
 # coding=utf-8
-import os
-
-from PyQt5 import QtCore
-
 from PyQt5 import uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *

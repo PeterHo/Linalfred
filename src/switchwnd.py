@@ -60,6 +60,8 @@ hotKeys = [
     ('<Alt>E', '/usr/lib/gnome-terminal/gnome-terminal-server'),
     ('<Alt>S', '/home/peter/tools/pycharm/bin/../jre/jre/bin/java'),
     ('<Alt>C', '/home/peter/tools/clion/bin/../jre/jre/bin/java'),
+    ('<Alt>Z', 'okular'),
+    ('<Alt>X', '/usr/bin/WizNote'),
 ]
 
 lastWid = None

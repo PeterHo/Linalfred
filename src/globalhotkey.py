@@ -76,6 +76,10 @@ class GlobalHotKeyBinding(QThread):
         self.running = True
         while self.running:
             event = self.display.next_event()
+            print(event)
+            if event is None or not hasattr(event, 'detail'):
+                # self.display.allow_events(X.ReplayKeyboard, event.time)
+                continue
             for hotKey in self.hotKeyList:
                 if event.detail == hotKey.keyCode and event.type == X.KeyPress and not hotKey.wait_for_release:
                     modifiers = event.state & self.known_modifiers_mask

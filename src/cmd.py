@@ -189,9 +189,19 @@ class BuildInCmdList:
         return True
 
     @staticmethod
+    def onRefreshAppExec(params=None):
+        from app import AppList
+        AppList.getAllApps()
+        print("refresh app")
+        return True
+
+    @staticmethod
     def init():
         BuildInCmdList.cmdList.clear()
-        BuildInCmdList.cmdList.append(BuildInCmd().set('Quit', BuildInCmdList.onQuitExec, '退出 Linalfred', 'quit.png'))
+        BuildInCmdList.cmdList.append(
+            BuildInCmd().set('Quit', BuildInCmdList.onQuitExec, '退出 Linalfred', 'quit.png'))
+        # BuildInCmdList.cmdList.append(
+        #     BuildInCmd().set('RefreshApp', BuildInCmdList.onRefreshAppExec, '刷新已安装应用', 'refresh.jpg'))
         BuildInCmdList.cmdList.sort(key=lambda x: x.name.lower())
 
     @staticmethod
