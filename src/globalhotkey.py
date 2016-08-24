@@ -7,6 +7,7 @@ from Xlib import X, error
 import gi
 
 from switchwnd import onSwitchWnd, addSwitchWndHotKeys
+from vikeys import addViKeysHotKeys, onViKeys
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
@@ -49,12 +50,14 @@ class GlobalHotKeyBinding(QThread):
 
     def map_modifiers(self):
         gdk_modifiers = (Gdk.ModifierType.CONTROL_MASK, Gdk.ModifierType.SHIFT_MASK, Gdk.ModifierType.MOD1_MASK,
-                         Gdk.ModifierType.MOD2_MASK, Gdk.ModifierType.MOD3_MASK, Gdk.ModifierType.MOD4_MASK,
-                         Gdk.ModifierType.MOD5_MASK, Gdk.ModifierType.SUPER_MASK, Gdk.ModifierType.HYPER_MASK)
+                         # Gdk.ModifierType.MOD2_MASK, Gdk.ModifierType.MOD3_MASK,
+                         Gdk.ModifierType.MOD4_MASK,
+                         # Gdk.ModifierType.MOD5_MASK,
+                         Gdk.ModifierType.SUPER_MASK, Gdk.ModifierType.HYPER_MASK)
         self.known_modifiers_mask = 0
         for modifier in gdk_modifiers:
-            if "Mod" not in Gtk.accelerator_name(0, modifier):
-                self.known_modifiers_mask |= modifier
+            # if "Mod" not in Gtk.accelerator_name(0, modifier):
+            self.known_modifiers_mask |= modifier
 
     def grab(self, accelerator):
         keyVal, modifiers = Gtk.accelerator_parse(accelerator)
@@ -116,9 +119,12 @@ class GlobalHotKeyBinding(QThread):
 def onGlobalHotKey(hotkey):
     if onSwitchWnd(hotkey):
         return
+    if onViKeys(hotkey):
+        return
 
 
 def initGlobalHotKey(dlg):
     key = GlobalHotKeyBinding(dlg, onGlobalHotKey)
+    addViKeysHotKeys(key)
     addSwitchWndHotKeys(key)
     key.start()
