@@ -19,4 +19,4 @@ class Main:
 
     @staticmethod
     def list(param):
-        return [(None, Main.desc + " " + " ".join(param), None)]
+        return [(None, Main.desc + " " + " ".join(param), None, None)]

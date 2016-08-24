@@ -44,9 +44,9 @@ class Main:
     def list(param):
         if not param or (param[0] != 'c' and param[0] != 'm'):
             return [
-                ('Usage', '[c] ordered by %CPU, [m] ordered by %MEM', None),
-                ('top c', 'sort by %CPU', None),
-                ('top m', 'sort by %MEM', None),
+                ('Usage', '[c] ordered by %CPU, [m] ordered by %MEM', None, None),
+                ('top c', 'sort by %CPU', None, 'top c'),
+                ('top m', 'sort by %MEM', None, 'top m'),
             ]
         if param[0] == 'c':
             f = os.popen('ps axo comm,pid,pcpu,pmem,user,command k -pcpu |head')
@@ -61,5 +61,5 @@ class Main:
             ret.append(
                 (info[0],
                  'PID: ' + info[1] + ', CPU: ' + info[2] + '%, RAM: ' + info[3] + '%',
-                 getAppIcon(info[5])))
+                 getAppIcon(info[5]), None))
         return ret

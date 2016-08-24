@@ -141,6 +141,8 @@ class PluginCmd(Cmd):
                     new.desc = l[1]
                 if l[2]:
                     new.setIconName(l[2])
+                if l[3]:
+                    new.keyword = l[3]
                 showList.append(new)
             return showList
 
