@@ -1,5 +1,8 @@
 # coding=utf-8
 import os
+
+import sys
+
 from cmd import PluginCmd
 from importlib import util
 
@@ -10,6 +13,7 @@ __author__ = 'peter'
 
 class Plugin:
     pluginList = []
+    sys.path.append(Cfg.pluginPath)
 
     @staticmethod
     def getAllPlugins():

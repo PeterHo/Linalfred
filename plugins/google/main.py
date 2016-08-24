@@ -1,10 +1,10 @@
 # coding=utf-8
-from PyQt5.QtCore import QProcess
+from plugin_common.Plugin import Plugin
 
 __author__ = 'peter'
 
 
-class Main:
+class Main(Plugin):
     title = 'Google'
     desc = '使用谷歌搜索'
     keyword = 'g'
@@ -12,9 +12,9 @@ class Main:
 
     @staticmethod
     def run(param):
-        if not len(param):
+        if not param:
             return False
-        QProcess.startDetached("xdg-open", ["https://www.google.com/search?q=" + "+".join(param)])
+        Plugin.openURL("https://www.google.com/search?q=" + "+".join(param))
         return True
 
     @staticmethod
