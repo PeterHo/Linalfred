@@ -2,8 +2,8 @@
 # coding=utf-8
 import sys
 
+from globalhotkey import initGlobalHotKey
 from singleton import SingletonApp
-from switchwnd import initSwitchWnd
 from ui.maindlg import MainDlg
 
 __author__ = 'peter'
@@ -14,7 +14,7 @@ if __name__ == "__main__":
         app.send_message(sys.argv)
     else:
         dlg = MainDlg()
-        initSwitchWnd(dlg)
+        initGlobalHotKey(dlg)
         dlg.show()
         app.setDlg(dlg)
         sys.exit(app.exec_())

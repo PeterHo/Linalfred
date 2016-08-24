@@ -6,6 +6,8 @@ from Xlib import X, error
 
 import gi
 
+from switchwnd import onSwitchWnd, addSwitchWndHotKeys
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 
@@ -109,3 +111,14 @@ class GlobalHotKeyBinding(QThread):
         self.running = False
         self.ungrab_all()
         self.display.close()
+
+
+def onGlobalHotKey(hotkey):
+    if onSwitchWnd(hotkey):
+        return
+
+
+def initGlobalHotKey(dlg):
+    key = GlobalHotKeyBinding(dlg, onGlobalHotKey)
+    addSwitchWndHotKeys(key)
+    key.start()

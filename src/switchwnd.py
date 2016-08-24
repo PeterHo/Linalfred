@@ -2,8 +2,6 @@
 import os
 import gi
 
-from globalhotkey import GlobalHotKeyBinding
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
@@ -99,15 +97,15 @@ def switchToWnd(cmd):
         os.popen(cmd)
 
 
-def onGlobalHotKey(hotkey):
+def onSwitchWnd(hotkey):
     for key in hotKeys:
         keyVal, modifiers = Gtk.accelerator_parse(key[0])
-        if keyVal == hotkey.keyVal:
-            return switchToWnd(key[1])
+        if keyVal == hotkey.keyVal and modifiers == hotkey.modifiers:
+            switchToWnd(key[1])
+            return True
+    return False
 
 
-def initSwitchWnd(dlg):
-    key = GlobalHotKeyBinding(dlg, onGlobalHotKey)
+def addSwitchWndHotKeys(key):
     for hotkey in hotKeys:
         key.grab(hotkey[0])
-    key.start()
