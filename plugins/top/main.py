@@ -44,7 +44,6 @@ class Main:
     def list(param):
         if not param or (param[0] != 'c' and param[0] != 'm'):
             return [
-                ('Usage', '[c] ordered by %CPU, [m] ordered by %MEM', None, None),
                 ('top c', 'sort by %CPU', None, 'top c'),
                 ('top m', 'sort by %MEM', None, 'top m'),
             ]
