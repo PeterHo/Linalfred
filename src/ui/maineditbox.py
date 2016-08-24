@@ -73,10 +73,9 @@ class MainEditBox(QPlainTextEdit):
                 # TODO 显示切换历史命令
                 pass
         elif key == Qt.Key_Tab:
-            # 如果有列表项并且命令中无空格,则补全
+            # 如果有列表项,则补全
             if self.dlg.listBox.getCurCount() > 0:
-                if ' ' not in self.toPlainText():
-                    self.setText(self.dlg.listBox.getCurItemKeyword() + " ")
+                self.setText(self.dlg.listBox.complement(self.toPlainText()))
         else:
             super().keyPressEvent(event)
 

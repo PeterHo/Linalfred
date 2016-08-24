@@ -153,3 +153,8 @@ class MainListBox(QListWidget):
                 return i
 
         return -1
+
+    # 补全
+    def complement(self, text):
+        return self.getCurItemCmd().complement(text)
+

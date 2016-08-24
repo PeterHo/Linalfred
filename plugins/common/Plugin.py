@@ -1,0 +1,7 @@
+# coding=utf-8
+
+__author__ = 'peter'
+
+
+class Plugin:
+    pass

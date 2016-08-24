@@ -28,13 +28,18 @@ class Cmd:
         self.modifier = None
         self.shortcutKey = None
 
-    @abstractmethod
     def getDesc(self):
         pass
 
-    @abstractmethod
+    def list(self, cmd):
+        return [self]
+
     def exec(self, cmd):
         pass
+
+    def complement(self, cmd):
+        if cmd != self.keyword:
+            return self.keyword + " "
 
     def __eq__(self, other):
         return self.type == other.type and self.name == other.name
@@ -58,7 +63,7 @@ class AppCmd(Cmd):
         if keyword:
             self.keyword = keyword
         else:
-            self.keyword = name.replace(' ', '')
+            self.keyword = name
         self.executable = executable
         self.iconName = iconName
         return self
@@ -89,6 +94,9 @@ class FileCmd(Cmd):
         self.path = path
         self.iconName = iconName
         return self
+
+    def complement(self, cmd):
+        return cmd
 
 
 class PluginCmd(Cmd):
