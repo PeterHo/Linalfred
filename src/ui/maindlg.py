@@ -24,7 +24,7 @@ class MainDlg(QWidget):
         self.mutexPaint = QMutex()
         self.mutexThread = QMutex()
 
-        self.theme = Theme()
+        self.theme = Theme("Classic")
 
         self.editBox = MainEditBox(self, self)
         self.editBox.setObjectName("mainEditBox")
@@ -58,12 +58,14 @@ class MainDlg(QWidget):
 
         self.editBox.setFocus()
 
+        # 刷新应用列表
+        AppList.getAllApps()
+
         self.center()
 
     def show(self):
-        # 刷新插件列表和应用列表
+        # 刷新插件列表
         Plugin.getAllPlugins()
-        AppList.getAllApps()
         self.clearList()
         self.editBox.clearEditBox()
         super().show()

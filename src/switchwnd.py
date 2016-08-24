@@ -58,6 +58,7 @@ hotKeys = [
     ('<Alt>Q', '/usr/lib/firefox/firefox'),
     ('<Alt>W', 'nemo'),
     ('<Alt>E', '/usr/lib/gnome-terminal/gnome-terminal-server'),
+    ('<Alt>A', '/home/peter/tools/android-studio/bin/../jre/bin/java'),
     ('<Alt>S', '/home/peter/tools/pycharm/bin/../jre/jre/bin/java'),
     ('<Alt>C', '/home/peter/tools/clion/bin/../jre/jre/bin/java'),
     ('<Alt>Z', 'okular'),

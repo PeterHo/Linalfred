@@ -25,6 +25,7 @@ class Theme(object):
         # 列表项
         self.rowSize = 51
         self.iconSize = 42
+        self.listFontSize = 20
         self.defaultIcon = 'application-x-executable.png'
 
         # 列表
@@ -32,7 +33,20 @@ class Theme(object):
         self.listStylesheet = "QListWidget{border: 1px solid white} QListWidget::item{padding : 3px 3px 3px 3px}"
         self.groupBoxStylesheet = "QGroupBox{background:white;border-radius: 9px;}"
 
-        if themeName == "Dark":
+        if themeName == "Classic":
+            self.dlgHeight = 94
+            self.blurRadius = 10.0
+            self.shadowOffset = 0.0
+
+            self.editBoxSize = QSize(550, 50)
+            self.editBoxFontSize = 28
+
+            self.listY = 65
+            self.listStylesheet = """
+                QListWidget{border: 1px solid white} QListWidget::item{padding : 0px 0px 0px 3px}
+                """
+            self.groupBoxStylesheet = "QGroupBox{background:white;border-radius: 9px; padding: -3px -3px -3px -3px;}"
+        elif themeName == "Dark":
             self.dlgHeight = 94
             self.blurRadius = 10.0
             self.shadowColor = QColor(0, 0, 0, 200)

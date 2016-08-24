@@ -200,8 +200,8 @@ class BuildInCmdList:
         BuildInCmdList.cmdList.clear()
         BuildInCmdList.cmdList.append(
             BuildInCmd().set('Quit', BuildInCmdList.onQuitExec, '退出 Linalfred', 'quit.png'))
-        # BuildInCmdList.cmdList.append(
-        #     BuildInCmd().set('RefreshApp', BuildInCmdList.onRefreshAppExec, '刷新已安装应用', 'refresh.jpg'))
+        BuildInCmdList.cmdList.append(
+            BuildInCmd().set('RefreshApp', BuildInCmdList.onRefreshAppExec, '刷新已安装应用', 'refresh.jpg'))
         BuildInCmdList.cmdList.sort(key=lambda x: x.name.lower())
 
     @staticmethod

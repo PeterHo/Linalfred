@@ -39,6 +39,7 @@ class GlobalHotKeyBinding(QThread):
         self.display = Display()
         self.screen = self.display.screen()
         self.root = self.screen.root
+        self.ignored_masks = self.get_mask_combinations(X.LockMask | X.Mod2Mask | X.Mod5Mask)
         self.map_modifiers()
         self.hotKeyList = []
         self.running = False
@@ -62,7 +63,10 @@ class GlobalHotKeyBinding(QThread):
         modifiers = int(modifiers)
 
         catch = error.CatchError(error.BadAccess)
-        self.root.grab_key(keyCode, X.AnyModifier, True, X.GrabModeAsync, X.GrabModeSync, onerror=catch)
+        for ignored_mask in self.ignored_masks:
+            mod = modifiers | ignored_mask
+            self.root.grab_key(keyCode, mod, True, X.GrabModeAsync, X.GrabModeSync, onerror=catch)
+        self.display.sync()
         if catch.get_error():
             return False
         self.hotKeyList.append(HotKey().set(keyVal=keyVal, keyCode=keyCode, modifiers=modifiers))
@@ -71,6 +75,9 @@ class GlobalHotKeyBinding(QThread):
     def ungrab_all(self):
         for hotKey in self.hotKeyList:
             self.root.ungrab_key(hotKey.keyCode, X.AnyModifier, self.root)
+
+    def get_mask_combinations(self, mask):
+        return [x for x in range(mask + 1) if not (x & ~mask)]
 
     def run(self):
         self.running = True

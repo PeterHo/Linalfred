@@ -89,7 +89,7 @@ class MainListBox(QListWidget):
 
     def setListBoxFont(self):
         font = QFont()
-        font.setPointSize(20)
+        font.setPointSize(self.dlg.theme.listFontSize)
         self.setFont(font)
 
     def setOtherStyles(self):

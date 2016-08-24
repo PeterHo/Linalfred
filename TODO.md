@@ -1,3 +1,6 @@
+todo list
+全局vim式的方向键映射
+把界面做的再漂亮点
 自动选择listitem还是doubleitem
 记录历史命令
 优先列出历史命令

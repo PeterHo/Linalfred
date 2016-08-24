@@ -7,6 +7,7 @@ import fcntl
 import tempfile
 
 import pickle
+
 from PyQt5.QtCore import QIODevice
 from PyQt5.QtCore import QSharedMemory
 from PyQt5.QtCore import QTimer
@@ -118,7 +119,6 @@ class SingletonApp(QApplication):
         self.dlg = dlg
 
     def handle_new_message(self, message):
-        print("Received:", message)
         self.dlg.show()
 
     @staticmethod
