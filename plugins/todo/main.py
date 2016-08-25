@@ -1,4 +1,5 @@
 # coding=utf-8
+import copy
 import os
 import traceback
 
@@ -32,14 +33,20 @@ class Main(BasePlugin):
         elif param[0] == 'd':
             delList = []
             for todo in Main.getAllTodoList():
-                delList.append(
-                    Cmd(title=todo, desc=Main.mainCmd.desc, icon=Main.mainCmd.icon, cmd='todo d', param=todo,
-                        onRunCmd=Main.onDel))
+                cmd = copy.deepcopy(Main.mainCmd)
+                cmd.title = todo
+                cmd.cmd = 'todo d'
+                cmd.param = todo
+                cmd.onRunCmd = Main.onDel
+                delList.append(cmd)
             return delList
         elif param[0] == 'l':
             listList = []
             for todo in Main.getAllTodoList():
-                listList.append(Cmd(title=todo, desc=Main.mainCmd.desc, icon=Main.mainCmd.icon, cmd='todo l'))
+                cmd = copy.deepcopy(Main.mainCmd)
+                cmd.title = todo
+                cmd.cmd = 'todo l'
+                listList.append(cmd)
             return listList
         elif param[0] == 'c':
             return [Main.subCmdList[3]]

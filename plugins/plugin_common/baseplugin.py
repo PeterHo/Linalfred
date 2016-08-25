@@ -41,3 +41,7 @@ class BasePlugin:
     @staticmethod
     def openURL(url):
         QProcess.startDetached("xdg-open", [url])
+
+    @staticmethod
+    def bash(param):
+        QProcess.startDetached("/bin/bash", param)

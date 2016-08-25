@@ -1,6 +1,9 @@
 # coding=utf-8
 import os
 
+from plugin_common.baseplugin import BasePlugin
+from plugin_common.baseplugin import Cmd
+
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -29,24 +32,23 @@ def getAppIcon(name):
     return 'app.png'
 
 
-class Main:
-    title = 'Top'
-    desc = '显示当前进程'
-    keyword = 'top'
-    iconName = 'icon.png'
+class Main(BasePlugin):
+    mainCmd = None
+    subCmdList = []
 
     @staticmethod
-    def run(param):
-        Main.list(param)
-        return False
+    def init():
+        Main.mainCmd = Cmd(title='Top', desc='显示当前进程', icon='icon.png', cmd='top')
+
+        Main.subCmdList = [
+            Cmd(title='top c', desc='sort by %CPU', icon=Main.mainCmd.icon, cmd='top c'),
+            Cmd(title='top m', desc='sort by %MEM', icon=Main.mainCmd.icon, cmd='top m'),
+        ]
 
     @staticmethod
-    def list(param):
-        if not param or (param[0] != 'c' and param[0] != 'm'):
-            return [
-                ('top c', 'sort by %CPU', None, 'top c'),
-                ('top m', 'sort by %MEM', None, 'top m'),
-            ]
+    def onList(param):
+        if not param:
+            return Main.subCmdList
         if param[0] == 'c':
             f = os.popen('ps axo comm,pid,pcpu,pmem,user,command k -pcpu |head')
         elif param[0] == 'm':
@@ -54,11 +56,10 @@ class Main:
         else:
             return []
 
-        ret = []
+        topList = []
         for line in f.readlines()[1:]:
             info = line.split()
-            ret.append(
-                (info[0],
-                 'PID: ' + info[1] + ', CPU: ' + info[2] + '%, RAM: ' + info[3] + '%',
-                 getAppIcon(info[5]), None))
-        return ret
+            topList.append(
+                Cmd(title=info[0], desc='PID: ' + info[1] + ', CPU: ' + info[2] + '%, RAM: ' + info[3] + '%',
+                    icon=getAppIcon(info[5]), cmd='top ' + param[0]))
+        return topList

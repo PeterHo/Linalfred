@@ -41,8 +41,10 @@ class Cmd:
         pass
 
     def complement(self, cmd):
-        if cmd != self.keyword:
+        if len(cmd) <= len(self.keyword):
             return self.keyword + " "
+        else:
+            return cmd
 
     def __eq__(self, other):
         return self.type == other.type and self.name == other.name
