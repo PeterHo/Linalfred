@@ -96,9 +96,16 @@ class MainDlg(QWidget):
         if self.listBox.currentRow() == -1:
             self.listBox.setCurrentRow(0)
 
-    def onEnterCurItem(self):
-        if self.listBox.enterCurItem():
+    def dealItemReturnValue(self, value):
+        if not value:
+            return
+        if value == "close":
             self.closeDlg()
+        elif value.startswith("cmd:"):
+            self.editBox.setText(value[4:])
+
+    def onEnterCurItem(self):
+        self.dealItemReturnValue(self.listBox.enterCurItem())
 
     def showList(self, cmds):
         if not cmds:

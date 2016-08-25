@@ -52,8 +52,7 @@ class MainEditBox(QPlainTextEdit):
         if alt or ctrl or win:
             index = self.dlg.listBox.getItemIndexByShortcut(modifiers, key)
             if index != -1:
-                if self.dlg.listBox.enterItem(index):
-                    self.dlg.closeDlg()
+                self.dlg.dealItemReturnValue(self.dlg.listBox.enterItem(index))
                 return
 
         if key == Qt.Key_Enter or key == Qt.Key_Return:

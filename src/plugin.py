@@ -2,6 +2,7 @@
 import os
 
 import sys
+import traceback
 
 from cmd import PluginCmd
 from importlib import util
@@ -27,9 +28,11 @@ class Plugin:
                     spec = util.spec_from_file_location('main', pluginFullName)
                     module = util.module_from_spec(spec)
                     spec.loader.exec_module(module)
-                    Plugin.pluginList.append(PluginCmd().set(module, dirFullName))
-                except:
-                    pass
+                    # 调用插件的初始化方法
+                    module.Main.init()
+                    Plugin.pluginList.append(PluginCmd().set(module.Main, dirFullName))
+                except AttributeError:
+                    traceback.print_exc()
 
     @staticmethod
     def getPluginList():

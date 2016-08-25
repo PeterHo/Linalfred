@@ -1,10 +1,13 @@
 # coding=utf-8
-from abc import abstractmethod
 from enum import Enum
 
+import sys
 from PyQt5.QtCore import QProcess
 
 from config import Cfg
+
+sys.path.append(Cfg.pluginPath)
+from plugin_common.baseplugin import BasePlugin, RetVal
 from singleton import SingletonApp
 
 __author__ = 'peter'
@@ -55,8 +58,9 @@ class AppCmd(Cmd):
         return self.executable
 
     def exec(self, cmd):
-        QProcess.startDetached(self.executable, cmd.split()[1:])
-        return True
+        # 执行程序,命令截掉keyword以后就是参数
+        QProcess.startDetached(self.executable, cmd[len(self.keyword):].split())
+        return RetVal.close
 
     def set(self, name=None, keyword=None, executable=None, iconName=None):
         self.name = name
@@ -83,7 +87,7 @@ class FileCmd(Cmd):
 
     def exec(self, cmd):
         QProcess.startDetached('xdg-open', [self.path])
-        return True
+        return BasePlugin.close
 
     def set(self, name=None, keyword=None, path=None, iconName=None):
         self.name = name
@@ -105,16 +109,13 @@ class PluginCmd(Cmd):
         self.type = CmdType.plugin
         self.desc = None
         self.plugin = None
+        self.pluginParam = None
         self.path = None
+        self.onRunCmd = None
 
     def copy(self):
         new = PluginCmd()
-        new.type = self.type
-        new.desc = self.desc
         new.plugin = self.plugin
-        new.name = self.name
-        new.keyword = self.keyword
-        new.iconName = self.iconName
         new.path = self.path
         return new
 
@@ -128,36 +129,35 @@ class PluginCmd(Cmd):
             else:
                 self.iconName = self.path + '/' + iconName
 
+    def setByPluginCmd(self, cmd):
+        self.name = cmd.title
+        self.desc = cmd.desc
+        self.keyword = cmd.cmd
+        self.pluginParam = cmd.param
+        self.setIconName(cmd.icon)
+        self.onRunCmd = cmd.onRunCmd
+
     def set(self, module, path):
-        self.name = module.Main.title
-        self.desc = module.Main.desc
-        self.keyword = module.Main.keyword if hasattr(module.Main, 'keyword') else module.Main.title
         self.plugin = module
         self.path = path
-        self.setIconName(module.Main.iconName)
+        self.setByPluginCmd(module.mainCmd)
         return self
 
     def list(self, cmd):
-        if hasattr(self.plugin.Main, 'list'):
-            showList = []
-            list_ = self.plugin.Main.list(cmd.split()[1:])
-            for l in list_:
-                new = self.copy()
-                if l[0]:
-                    new.name = l[0]
-                if l[1]:
-                    new.desc = l[1]
-                if l[2]:
-                    new.setIconName(l[2])
-                if l[3]:
-                    new.keyword = l[3]
-                showList.append(new)
-            return showList
-
-        return [self]
+        showList = []
+        cmdList = self.plugin.onList(cmd[len(self.keyword):].strip())
+        if not cmdList:
+            return [self]
+        for cmd in cmdList:
+            subCmd = self.copy()
+            subCmd.setByPluginCmd(cmd)
+            showList.append(subCmd)
+        return showList
 
     def exec(self, cmd):
-        return self.plugin.Main.run(cmd.split()[1:])
+        if self.pluginParam:
+            return self.onRunCmd(self.pluginParam)
+        return self.onRunCmd(cmd[len(self.keyword):].strip())
 
 
 class BuildInCmd(Cmd):

@@ -1,10 +1,10 @@
 # coding=utf-8
-from plugin_common.Plugin import Plugin
+from plugin_common.baseplugin import BasePlugin
 
 __author__ = 'peter'
 
 
-class Main(Plugin):
+class Main(BasePlugin):
     title = 'Google'
     desc = '使用谷歌搜索'
     keyword = 'g'
@@ -13,9 +13,9 @@ class Main(Plugin):
     @staticmethod
     def run(param):
         if not param:
-            return False
-        Plugin.openURL("https://www.google.com/search?q=" + "+".join(param))
-        return True
+            return BasePlugin.keep
+        BasePlugin.openURL("https://www.google.com/search?q=" + "+".join(param))
+        return BasePlugin.close
 
     @staticmethod
     def list(param):
