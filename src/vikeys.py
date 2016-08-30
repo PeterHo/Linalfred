@@ -1,6 +1,4 @@
 # coding=utf-8
-from virtkey import virtkey
-
 import gi
 
 gi.require_version('Gtk', '3.0')
@@ -9,40 +7,28 @@ from gi.repository import Gtk
 __author__ = 'peter'
 
 
-def onUp():
-    v = virtkey()
-    v.press_keysym(65362)
-    v.release_keysym(65362)
+def onUp(globalhotkey):
+    globalhotkey.send_key('Up')
 
 
-def onDown():
-    v = virtkey()
-    v.press_keysym(65364)
-    v.release_keysym(65364)
+def onDown(globalhotkey):
+    globalhotkey.send_key('Down')
 
 
-def onLeft():
-    v = virtkey()
-    v.press_keysym(65361)
-    v.release_keysym(65361)
+def onLeft(globalhotkey):
+    globalhotkey.send_key('Left')
 
 
-def onRight():
-    v = virtkey()
-    v.press_keysym(65363)
-    v.release_keysym(65363)
+def onRight(globalhotkey):
+    globalhotkey.send_key('Right')
 
 
-def onPageUp():
-    v = virtkey()
-    v.press_keysym(65365)
-    v.release_keysym(65365)
+def onPageUp(globalhotkey):
+    globalhotkey.send_key('Page_Up')
 
 
-def onPageDown():
-    v = virtkey()
-    v.press_keysym(65366)
-    v.release_keysym(65366)
+def onPageDown(globalhotkey):
+    globalhotkey.send_key('Page_Down')
 
 
 hotKeys = [
@@ -55,11 +41,11 @@ hotKeys = [
 ]
 
 
-def onViKeys(hotkey):
+def onViKeys(globalhotkey, hotkey):
     for key in hotKeys:
         keyVal, modifiers = Gtk.accelerator_parse(key[0])
         if keyVal == hotkey.keyVal and modifiers == hotkey.modifiers:
-            key[1]()
+            key[1](globalhotkey)
             return True
     return False
 

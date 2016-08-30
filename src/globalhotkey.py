@@ -1,8 +1,9 @@
 # coding=utf-8
+import time
+
 from PyQt5.QtCore import QThread
-from PyQt5.QtCore import pyqtSignal
 from Xlib.display import Display
-from Xlib import X, error
+from Xlib import X, XK, protocol, error
 
 import gi
 
@@ -33,8 +34,6 @@ class HotKey:
 
 
 class GlobalHotKeyBinding(QThread):
-    keyPressSignal = pyqtSignal(object)
-
     def __init__(self, parent=None, callBack=None):
         super().__init__(parent)
         self.dlg = parent
@@ -46,7 +45,10 @@ class GlobalHotKeyBinding(QThread):
         self.map_modifiers()
         self.hotKeyList = []
         self.running = False
-        self.keyPressSignal.connect(callBack)
+        self.callBack = callBack
+
+    def get_mask_combinations(self, mask):
+        return [x for x in range(mask + 1) if not (x & ~mask)]
 
     def map_modifiers(self):
         gdk_modifiers = (Gdk.ModifierType.CONTROL_MASK, Gdk.ModifierType.SHIFT_MASK, Gdk.ModifierType.MOD1_MASK,
@@ -81,8 +83,31 @@ class GlobalHotKeyBinding(QThread):
         for hotKey in self.hotKeyList:
             self.root.ungrab_key(hotKey.keyCode, X.AnyModifier, self.root)
 
-    def get_mask_combinations(self, mask):
-        return [x for x in range(mask + 1) if not (x & ~mask)]
+    def send_key(self, emulated_key):
+        shift_mask = 0  # or Xlib.X.ShiftMask
+        window = self.display.get_input_focus()._data["focus"]
+        keysym = XK.string_to_keysym(emulated_key)
+        keycode = self.display.keysym_to_keycode(keysym)
+        event = protocol.event.KeyPress(
+            time=int(time.time()),
+            root=self.root,
+            window=window,
+            same_screen=0, child=X.NONE,
+            root_x=0, root_y=0, event_x=0, event_y=0,
+            state=shift_mask,
+            detail=keycode
+        )
+        window.send_event(event, propagate=True)
+        event = protocol.event.KeyRelease(
+            time=int(time.time()),
+            root=self.display.screen().root,
+            window=window,
+            same_screen=0, child=X.NONE,
+            root_x=0, root_y=0, event_x=0, event_y=0,
+            state=shift_mask,
+            detail=keycode
+        )
+        window.send_event(event, propagate=True)
 
     def run(self):
         self.running = True
@@ -103,7 +128,7 @@ class GlobalHotKeyBinding(QThread):
                     if event.type == X.KeyRelease:
                         hotKey.wait_for_release = False
                         self.dlg.mutexThread.lock()
-                        self.keyPressSignal.emit(hotKey)
+                        self.callBack(self, hotKey)
                         self.dlg.mutexThread.unlock()
                     self.display.allow_events(X.AsyncKeyboard, event.time)
                     break
@@ -116,10 +141,10 @@ class GlobalHotKeyBinding(QThread):
         self.display.close()
 
 
-def onGlobalHotKey(hotkey):
+def onGlobalHotKey(obj, hotkey):
     if onSwitchWnd(hotkey):
         return
-    if onViKeys(hotkey):
+    if onViKeys(obj, hotkey):
         return
 
 

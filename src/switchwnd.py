@@ -53,14 +53,14 @@ def getProcessList():
 
 
 hotKeys = [
-    ('<Alt>Q', '/usr/lib/firefox/firefox'),
-    ('<Alt>W', 'nemo'),
-    ('<Alt>E', '/usr/lib/gnome-terminal/gnome-terminal-server'),
-    ('<Alt>A', '/home/peter/tools/android-studio/bin/../jre/bin/java'),
-    ('<Alt>S', '/home/peter/tools/pycharm/bin/../jre/jre/bin/java'),
-    ('<Alt>C', '/home/peter/tools/clion/bin/../jre/jre/bin/java'),
-    ('<Alt>Z', 'okular'),
-    ('<Alt>X', '/usr/bin/WizNote'),
+    ('<Mod4>Q', '/usr/lib/firefox/firefox'),
+    ('<Mod4>W', 'nemo'),
+    ('<Mod4>E', '/usr/lib/gnome-terminal/gnome-terminal-server'),
+    ('<Mod4>A', '/home/peter/tools/android-studio/bin/../jre/bin/java'),
+    ('<Mod4>S', '/home/peter/tools/pycharm/bin/../jre/jre/bin/java'),
+    ('<Mod4>F', '/home/peter/tools/clion/bin/../jre/jre/bin/java'),
+    ('<Mod4>Z', 'okular'),
+    ('<Mod4>X', '/usr/bin/WizNote'),
 ]
 
 lastWid = None
