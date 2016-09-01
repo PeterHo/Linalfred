@@ -18,6 +18,7 @@ class CmdType(Enum):
     file = 1
     plugin = 2
     buildIn = 3
+    fileManager = 4
 
 
 class Cmd:

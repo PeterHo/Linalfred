@@ -70,8 +70,8 @@ class Search:
         if keyword[:1] == ' ':
             # 文件查找
             ret = Search.searchFiles(keyword[1:])
-        elif keyword == '~':
-            return '~/'
+        # elif keyword == '~':
+        #     return '~/'
         elif keyword[:1] == '~' or keyword[:1] == '/':
             # 开启文件管理模式
             ret = FileManager.Search(keyword)

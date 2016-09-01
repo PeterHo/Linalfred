@@ -20,3 +20,7 @@ class Cfg:
     @staticmethod
     def getInt(sectionName, key):
         return int(Cfg.get(sectionName, key))
+
+    @staticmethod
+    def getBoolean(sectionName, key):
+        return bool(Cfg.get(sectionName, key))

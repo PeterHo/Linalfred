@@ -60,7 +60,7 @@ hotKeys = [
     ('<Mod4>S', '/home/peter/tools/pycharm/bin/../jre/jre/bin/java'),
     ('<Mod4>F', '/home/peter/tools/clion/bin/../jre/jre/bin/java'),
     ('<Mod4>Z', 'okular'),
-    ('<Mod4>X', '/usr/bin/WizNote'),
+    ('<Mod4>X', '/home/peter/src/WizNote/WizNote'),
 ]
 
 lastWid = None
