@@ -146,7 +146,10 @@ class MainDlg(QWidget):
 
     def mutexShowList(self, ls):
         self.mutexPaint.lock()
-        self.showList(ls)
+        if isinstance(ls, str):
+            self.editBox.setText(ls)
+        else:
+            self.showList(ls)
         self.mutexPaint.unlock()
 
     def center(self):

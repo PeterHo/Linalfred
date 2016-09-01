@@ -9,7 +9,7 @@ __author__ = 'peter'
 
 
 class DlgThread(QThread):
-    finishSignal = pyqtSignal(list)
+    finishSignal = pyqtSignal(object)
 
     def __init__(self, parent=None):
         super().__init__(parent)

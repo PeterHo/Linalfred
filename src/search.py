@@ -8,6 +8,7 @@ from cmd import FileCmd, BuildInCmdList
 from common import isNeedLower, isSmartEqual, isSmartStartsWith
 from config import Cfg
 from file import getFileList, getFileIconName
+from fileManager import FileManager
 from plugin import Plugin
 
 __author__ = 'peter'
@@ -69,6 +70,11 @@ class Search:
         if keyword[:1] == ' ':
             # 文件查找
             ret = Search.searchFiles(keyword[1:])
+        elif keyword == '~':
+            return '~/'
+        elif keyword[:1] == '~' or keyword[:1] == '/':
+            # 开启文件管理模式
+            ret = FileManager.Search(keyword)
         else:
             # 查找App,插件,内置命令
             ret = Search.searchApps(keyword)

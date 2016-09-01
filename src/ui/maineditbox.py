@@ -27,6 +27,7 @@ class MainEditBox(QPlainTextEdit):
         self.setFont(font)
 
     def setOtherStyles(self):
+        self.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.setStyleSheet(self.dlg.theme.editBoxStylesheet)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

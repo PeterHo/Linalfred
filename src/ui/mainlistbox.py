@@ -44,7 +44,7 @@ class DoubleListItem(QWidget):
         self.cmd = cmd
         fm = QFontMetrics(self.ui.text.font())
         self.ui.text.setText(fm.elidedText(self.cmd.name, Qt.ElideRight, self.ui.text.width()))
-        self.ui.subtext.setText(fm.elidedText(self.cmd.getDesc(), Qt.ElideRight, self.ui.text.width()))
+        self.ui.subtext.setText(fm.elidedText(self.cmd.getDesc(), Qt.ElideLeft, self.ui.text.width()))
         self.ui.shortcut.setText(shortcut)
 
         if not self.cmd.iconName:
