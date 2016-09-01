@@ -1,7 +1,8 @@
 # coding=utf-8
 import os
+import re
 
-from plugin_common.baseplugin import BasePlugin
+from plugin_common.baseplugin import BasePlugin, RetVal
 from plugin_common.baseplugin import Cmd
 
 import gi
@@ -38,28 +39,39 @@ class Main(BasePlugin):
 
     @staticmethod
     def init():
-        Main.mainCmd = Cmd(title='top', desc='显示当前进程', icon='icon.png', cmd='top')
+        Main.mainCmd = Cmd(title='kill', desc='杀死指定进程', icon='kill.png', cmd='kill')
 
-        Main.subCmdList = [
-            Cmd(title='top c', desc='sort by %CPU', icon=Main.mainCmd.icon, cmd='top c'),
-            Cmd(title='top m', desc='sort by %MEM', icon=Main.mainCmd.icon, cmd='top m'),
-        ]
+    @staticmethod
+    def getRegex(keyword):
+        pattern = '.*?'.join(keyword)
+        return re.compile(pattern)
 
     @staticmethod
     def onList(param):
         if not param:
-            return Main.subCmdList
-        if param[0] == 'c':
-            f = os.popen('ps axo comm,pid,pcpu,pmem,user,command k -pcpu |head')
-        elif param[0] == 'm':
-            f = os.popen('ps axo comm,pid,pcpu,pmem,user,command k -pmem |head')
-        else:
-            return []
+            return [Main.mainCmd]
+        f = os.popen('ps axo comm,pid,command')
 
-        topList = []
+        killList = []
+        regex = Main.getRegex(param)
         for line in f.readlines()[1:]:
             info = line.split()
-            topList.append(
-                Cmd(title=info[0], desc='PID: ' + info[1] + ', CPU: ' + info[2] + '%, RAM: ' + info[3] + '%',
-                    icon=getAppIcon(info[5]), cmd='top ' + param[0]))
-        return topList
+            match = regex.search(info[0].lower())
+            if match:
+                killList.append((len(match.group()), match.start(), info))
+        infos = [x for _, _, x in sorted(killList, key=lambda x: (x[0], x[1], x[2][0].lower()))]
+
+        killList.clear()
+        for info in infos:
+            killList.append(
+                Cmd(title=info[0], desc=info[1] + ' ' + info[2],
+                    icon=getAppIcon(info[2]), cmd='kill', param=info[1], onRunCmd=Main.onKill))
+        return killList
+
+    @staticmethod
+    def onKill(param):
+        if not param:
+            return [Main.mainCmd]
+        print(param)
+        BasePlugin.execute(["kill", "-9", param])
+        return RetVal.close

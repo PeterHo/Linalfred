@@ -7,7 +7,7 @@ from PyQt5.QtCore import QProcess
 from config import Cfg
 
 sys.path.append(Cfg.pluginPath)
-from plugin_common.baseplugin import BasePlugin, RetVal
+from plugin_common.baseplugin import RetVal
 from singleton import SingletonApp
 
 __author__ = 'peter'
@@ -89,7 +89,7 @@ class FileCmd(Cmd):
 
     def exec(self, cmd):
         QProcess.startDetached('xdg-open', [self.path])
-        return BasePlugin.close
+        return RetVal.close
 
     def set(self, name=None, keyword=None, path=None, iconName=None):
         self.name = name
@@ -198,14 +198,14 @@ class BuildInCmdList:
     @staticmethod
     def onQuitExec(params=None):
         SingletonApp.instance.onExit(None, None)
-        return True
+        return RetVal.close
 
     @staticmethod
     def onRefreshAppExec(params=None):
         from app import AppList
         AppList.getAllApps()
         print("refresh app")
-        return True
+        return RetVal.close
 
     @staticmethod
     def init():

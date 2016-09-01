@@ -45,3 +45,7 @@ class BasePlugin:
     @staticmethod
     def bash(param):
         QProcess.startDetached("/bin/bash", param)
+
+    @staticmethod
+    def execute(param):
+        QProcess.startDetached(param[0], param[1:])
