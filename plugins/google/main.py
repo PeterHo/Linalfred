@@ -19,7 +19,8 @@ class Main(BasePlugin):
     def run(param):
         if not param:
             return BasePlugin.setShowCmd('g')
-        BasePlugin.openURL("https://www.google.com/search?q=" + "+".join(param.split()))
+        # BasePlugin.openURL("https://www.google.com/search?q=" + "+".join(param.split()))
+        BasePlugin.openURL("https://www.google.com.hk/?gws_rd=cr,ssl#newwindow=1&safe=strict&q=" + "+".join(param.split()))
         return RetVal.close
 
     @staticmethod
